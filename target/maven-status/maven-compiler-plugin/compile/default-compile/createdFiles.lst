@@ -1,0 +1,3 @@
+amb\server\plugin\core\PluginCore.class
+amb\server\plugin\init\PluginConfig.class
+amb\server\plugin\listener\TpBookListener.class

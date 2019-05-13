@@ -1,0 +1,5 @@
+name: AmbServerPlugin
+author: Mr_Amb+-
+version: 1.0.0
+main: amb.server.plugin.core.PluginCore
+api-version: 1.14
