@@ -1,3 +1,5 @@
+amb\server\plugin\config\PluginConfig.class
 amb\server\plugin\core\PluginCore.class
-amb\server\plugin\init\PluginConfig.class
 amb\server\plugin\listener\TpBookListener.class
+amb\server\plugin\service\tpb\TpBookItem.class
+amb\server\plugin\service\tpb\TpBookGUI.class
