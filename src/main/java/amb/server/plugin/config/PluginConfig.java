@@ -13,6 +13,8 @@ public class PluginConfig {
     public static FileConfiguration tpbSaveData;
 
     private static File tpbSaveDataFile;
+    public static String tpBookTitle;
+    public static String tpBookMenuTitle;
 
     public static void init(JavaPlugin plugin){
         getPluginConfig(plugin);
@@ -21,20 +23,20 @@ public class PluginConfig {
     private static void getPluginConfig(JavaPlugin plugin){
         pluginConfig = plugin.getConfig();
         pluginConfig.addDefault("tpb.book.title","传送书");
-        pluginConfig.addDefault("tpb.menu.title","%s的传送书");
+        pluginConfig.addDefault("tpb.book.menu.title","%s的传送书");
         pluginConfig.options().copyDefaults(true);
         plugin.saveConfig();
+        tpBookTitle = pluginConfig.getString("tpb.book.title");
+        tpBookMenuTitle = pluginConfig.getString("tpb.book.menu.title");
     }
     private static void getTpbSaveData(JavaPlugin plugin){
         tpbSaveDataFile = new File(plugin.getDataFolder(),"tpbSaveData.yml");
         tpbSaveData = YamlConfiguration.loadConfiguration(tpbSaveDataFile);
-
-        tpbSaveData.set("public","123");
+        /*tpbSaveData.set("public","123");
         tpbSaveData.addDefault("def1","123");
         tpbSaveData.addDefault("def2","456");
-        tpbSaveData.options().copyDefaults(true);
+        tpbSaveData.options().copyDefaults(true);*/
         saveTpbSaveData();
-        //plugin.saveResource("tpbSaveData.yml", false);
     }
     public static void saveTpbSaveData(){
         try {

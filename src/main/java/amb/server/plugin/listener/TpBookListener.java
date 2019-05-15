@@ -2,23 +2,22 @@ package amb.server.plugin.listener;
 
 import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.service.tpb.TpBookGUI;
+import amb.server.plugin.service.tpb.TpBookService;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 
 public class TpBookListener implements Listener {
 
     @EventHandler
     public void onPlayerOpenBook(PlayerInteractEvent event){
         if (event.hasItem() && event.getItem().getType().equals(Material.WRITTEN_BOOK)){
-            event.getPlayer().sendMessage(event.getItem().toString());
-            event.getPlayer().sendMessage(PluginConfig.pluginConfig.getString("tpb.book.title"));
-            if (event.getItem().getItemMeta().getDisplayName().equals(PluginConfig.pluginConfig.getString("tpb.book.title"))){
+            if (event.getItem().getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)){
                 event.setCancelled(true);
                 TpBookGUI.openBook(event.getPlayer());
             }
@@ -28,12 +27,18 @@ public class TpBookListener implements Listener {
 
     @EventHandler
     public void onPlayerClickMenu(InventoryClickEvent event){
-        Player player = (Player) event.getWhoClicked();
-        String title = PluginConfig.pluginConfig.getString("tpb.menu.title").replace("%s",player.getDisplayName());
-        if (event.getView().getTitle().equals(title)){
+        if (event.getView().getTitle().equals(PluginConfig.tpBookMenuTitle)
+                && event.getCurrentItem() != null){
             event.setCancelled(true);
-            ItemStack clickedItem = event.getCurrentItem();
-            player.sendMessage("CLICK"+clickedItem.toString());
+            if (event.getClickedInventory().getType() == InventoryType.CHEST){
+                System.out.println(event.getClickedInventory().getType().toString());
+                Player player = (Player) event.getWhoClicked();
+
+                ItemStack clickedItem = event.getCurrentItem();
+                TpBookService.addPublicTeleporter(player, "haha");
+                player.sendMessage("CLICK"+clickedItem.toString());
+                player.closeInventory();
+            }
         }
     }
 }
