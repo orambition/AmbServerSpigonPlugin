@@ -26,6 +26,12 @@ public class Telepoter {
     public Location getLocation() {
         return location;
     }
+    public String getWorld(){
+        return "ÊÀ½ç:"+location.getWorld().getName();
+    }
+    public String getXYZ(){
+        return "×ø±ê:x="+location.getBlockX()+"y="+location.getBlockY()+"z="+location.getBlockZ();
+    }
 
     public String getAuthor() {
         return author;

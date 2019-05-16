@@ -1,5 +1,6 @@
 package amb.server.plugin.config;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,6 +16,8 @@ public class PluginConfig {
     private static File tpbSaveDataFile;
     public static String tpBookTitle;
     public static String tpBookMenuTitle;
+    public static Material publicTpItem;
+    public static Material privateTpItem;
 
     public static void init(JavaPlugin plugin){
         getPluginConfig(plugin);
@@ -24,10 +27,14 @@ public class PluginConfig {
         pluginConfig = plugin.getConfig();
         pluginConfig.addDefault("tpb.book.title","传送书");
         pluginConfig.addDefault("tpb.book.menu.title","%s的传送书");
+        pluginConfig.addDefault("tpb.book.menu.item.publictp",Material.RED_BANNER.toString());
+        pluginConfig.addDefault("tpb.book.menu.item.privatetp",Material.BLUE_BANNER.toString());
         pluginConfig.options().copyDefaults(true);
         plugin.saveConfig();
         tpBookTitle = pluginConfig.getString("tpb.book.title");
         tpBookMenuTitle = pluginConfig.getString("tpb.book.menu.title");
+        publicTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.publictp"));
+        privateTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.privatetp"));
     }
     private static void getTpbSaveData(JavaPlugin plugin){
         tpbSaveDataFile = new File(plugin.getDataFolder(),"tpbSaveData.yml");

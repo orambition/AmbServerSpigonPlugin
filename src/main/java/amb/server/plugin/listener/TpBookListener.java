@@ -31,12 +31,12 @@ public class TpBookListener implements Listener {
                 && event.getCurrentItem() != null){
             event.setCancelled(true);
             if (event.getClickedInventory().getType() == InventoryType.CHEST){
-                System.out.println(event.getClickedInventory().getType().toString());
                 Player player = (Player) event.getWhoClicked();
-
                 ItemStack clickedItem = event.getCurrentItem();
-                TpBookService.addPublicTeleporter(player, "haha");
-                player.sendMessage("CLICK"+clickedItem.toString());
+                if (clickedItem.getType() == Material.JUNGLE_SIGN){
+                    TpBookService.addPrivateTeleporter(player, "private");
+                }
+                //TpBookService.addPublicTeleporter(player, "haha");
                 player.closeInventory();
             }
         }

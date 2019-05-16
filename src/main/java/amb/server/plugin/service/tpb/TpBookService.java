@@ -27,6 +27,25 @@ public class TpBookService {
         }
     }
     /**
+     * 添加私人地点
+     * @param player
+     */
+    public static void addPrivateTeleporter(Player player, String name){
+        player.sendMessage("add");
+        int pNum = tpbSaveData.getInt("player."+player.getUniqueId().toString()+".num",0);
+        tpbSaveData.set("player."+player.getUniqueId().toString()+".tp."+pNum+".name",name);
+        tpbSaveData.set("player."+player.getUniqueId().toString()+".tp."+pNum+".location",player.getLocation());
+        tpbSaveData.set("player."+player.getUniqueId().toString()+".num",pNum+1);
+    }
+    /**
+     * 添加死亡地点
+     * @param player
+     */
+    public static void addPlayerDeadTeleporter(Player player){
+        player.sendMessage("dead");
+    }
+
+    /**
      * 获取所有公共地点
      */
     public static List<Telepoter> getAllPublicTeleporter(){
@@ -43,6 +62,23 @@ public class TpBookService {
         return telepoters;
     }
     /**
+     * 获取所有公共地点
+     */
+    public static List<Telepoter> getPlayerTeleporter(String uuid){
+        List<Telepoter> telepoters = new ArrayList<Telepoter>();
+        String path = "player."+uuid+".tp";
+        if(tpbSaveData.contains(path)){
+            for (String num : tpbSaveData.getConfigurationSection(path).getKeys(false)){
+                Telepoter telepoter = new Telepoter(num,
+                        tpbSaveData.getString(path+"."+num+".name","公共地点"),
+                        (Location) tpbSaveData.get(path+"."+num+".location"),
+                        null);
+                telepoters.add(telepoter);
+            }
+        }
+        return telepoters;
+    }
+    /**
      * 删除公共地点
      * @param player
      */
@@ -52,18 +88,6 @@ public class TpBookService {
         }
     }
 
-
-    /**
-     * 添加私人地点
-     * @param player
-     */
-    public static void addPrivateTeleporter(Player player, String name){
-        player.sendMessage("add");
-        int pNum = tpbSaveData.getInt("player."+player.getUniqueId().toString()+".num",0);
-        tpbSaveData.set("player.tp."+player.getUniqueId().toString()+"."+pNum+".name",name);
-        tpbSaveData.set("player.tp."+player.getUniqueId().toString()+"."+pNum+".location",player.getLocation());
-        tpbSaveData.set("player."+player.getUniqueId().toString()+".num",pNum++);
-    }
     /**
      * 删除私人地点
      * @param player
@@ -72,13 +96,7 @@ public class TpBookService {
         player.sendMessage("del");
     }
 
-    /**
-     * 添加死亡地点
-     * @param player
-     */
-    public static void addPlayerDeadTeleporter(Player player){
-        player.sendMessage("dead");
-    }
+
 
     /**
      * 设置传送开关
