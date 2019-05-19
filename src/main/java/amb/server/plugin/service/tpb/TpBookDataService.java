@@ -1,0 +1,243 @@
+package amb.server.plugin.service.tpb;
+
+import amb.server.plugin.model.Telepoter;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static amb.server.plugin.config.PluginConfig.*;
+
+public class TpBookDataService {
+    /**
+     * 添加公共地点
+     *
+     * @param player
+     */
+    public static void addPublicTeleporter(Player player, String name) {
+        if (player.hasPermission("op")) {
+            int pCount = tpbSaveData.getInt("public.count", 0);
+            if (pCount == publicTpMax) {
+                player.sendMessage("公共地点数量已达到上线，请删除后再添加");
+                return;
+            }
+            int pNum = getPNum("public");
+            tpbSaveData.set("public.tp." + pNum + ".name", name);
+            tpbSaveData.set("public.tp." + pNum + ".location", player.getLocation());
+            tpbSaveData.set("public.tp." + pNum + ".author", player.getDisplayName());
+            tpbSaveData.set("public.num", pNum + 1);
+            tpbSaveData.set("public.count", pCount + 1);
+            saveTpbSaveData();
+            player.sendMessage("新增公共传送点成功");
+        }
+    }
+
+    /**
+     * 添加私人地点
+     *
+     * @param player
+     */
+    public static void addPrivateTeleporter(Player player, String name, int price) {
+        String path = "player." + player.getUniqueId().toString();
+        int pCount = tpbSaveData.getInt(path + ".count", 0);
+        if (pCount == privateTpMax) {
+            player.sendMessage("传送点数量已达到上限\n请删除后再添加");
+            return;
+        }
+        if (player.getInventory().contains(tpBookCurrencyItem, price)){
+            player.getInventory().removeItem(new ItemStack(tpBookCurrencyItem, price));
+            player.sendMessage(ChatColor.GOLD + "消耗["+tpBookCurrencyItemName+"x"+price+"]");
+        }else {
+            player.sendMessage("背包中["+tpBookCurrencyItemName+"]不足"+price+"颗!");
+            float xp = player.getTotalExperience();
+            if (price < 10 && xp >= price * 100){
+                player.setExp(xp-price*100);
+                player.sendMessage(ChatColor.GREEN+"已消耗"+price*100+"点[经验值],剩余:"+(xp-price*100));
+            }else {
+                player.sendMessage(ChatColor.RED+"无法添加新的传送点");
+                return;
+            }
+        }
+
+
+        int pNum = getPNum(path);
+        if (null == name){
+            name = "私人传送点"+(pNum+1);
+        }
+        tpbSaveData.set(path + ".tp." + pNum + ".name", name);
+        tpbSaveData.set(path + ".tp." + pNum + ".location", player.getLocation());
+        tpbSaveData.set(path + ".num", pNum + 1);
+        tpbSaveData.set(path + ".count", pCount + 1);
+        saveTpbSaveData();
+        //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BOLD + ""+ ChatColor.GREEN + "增加私人传送点成功"));
+        sendMsg(player,"增加私人传送点成功");
+    }
+
+    /**
+     * 添加死亡地点
+     *
+     * @param player
+     */
+    public static void addPlayerDeadTeleporter(Player player) {
+        String path = "player." + player.getUniqueId().toString() + ".dead";
+
+        int pCount = tpbSaveData.getInt(path + ".count", 0);
+        if (pCount == deadTpMax) {
+            String num = tpbSaveData.getConfigurationSection(path + ".tp").getKeys(false).iterator().next();
+            tpbSaveData.set(path + ".tp." + num, null);
+        }else {
+            tpbSaveData.set(path + ".count", pCount + 1);
+        }
+
+        int pNum = getPNum(path);
+        tpbSaveData.set(path + ".tp." + pNum + ".name", "死亡地点" + (pNum+1));
+        tpbSaveData.set(path + ".tp." + pNum + ".location", player.getLocation());
+        tpbSaveData.set(path + ".tp." + pNum + ".ctime", System.currentTimeMillis());
+        tpbSaveData.set(path + ".num", pNum + 1);
+
+        saveTpbSaveData();
+        player.sendMessage(ChatColor.GREEN+"死亡地点已记录");
+    }
+
+    /**
+     * 获取所有公共地点
+     */
+    public static List<Telepoter> getAllPublicTeleporter() {
+        List<Telepoter> telepoters = new ArrayList<Telepoter>();
+        if (tpbSaveData.contains("public.tp")) {
+            for (String num : tpbSaveData.getConfigurationSection("public.tp").getKeys(false)) {
+                Telepoter telepoter = new Telepoter(num,
+                        tpbSaveData.getString("public.tp." + num + ".name", "公共地点"),
+                        (Location) tpbSaveData.get("public.tp." + num + ".location"), 1);
+                telepoter.setAuthor(tpbSaveData.getString("public.tp." + num + ".author", "admin"));
+                telepoters.add(telepoter);
+            }
+        }
+        return telepoters;
+    }
+
+    /**
+     * 获取所有私人地点
+     */
+    public static List<Telepoter> getPlayerPrivateTeleporter(String uuid) {
+        List<Telepoter> telepoters = new ArrayList<Telepoter>();
+        String path = "player." + uuid + ".tp";
+        if (tpbSaveData.contains(path)) {
+            for (String num : tpbSaveData.getConfigurationSection(path).getKeys(false)) {
+                Telepoter telepoter = new Telepoter(num,
+                        tpbSaveData.getString(path + "." + num + ".name", "私人地点"),
+                        (Location) tpbSaveData.get(path + "." + num + ".location"), 2);
+                telepoters.add(telepoter);
+            }
+        }
+        return telepoters;
+    }
+
+    /**
+     * 获取所有死亡地点
+     */
+    public static List<Telepoter> getPlayerDeadTeleporter(String uuid) {
+        List<Telepoter> telepoters = new ArrayList<Telepoter>();
+        String path = "player." + uuid + ".dead.tp";
+        if (tpbSaveData.contains(path)) {
+            for (String num : tpbSaveData.getConfigurationSection(path).getKeys(false)) {
+                Telepoter telepoter = new Telepoter(num,
+                        tpbSaveData.getString(path + "." + num + ".name", "死亡地点"),
+                        (Location) tpbSaveData.get(path + "." + num + ".location"), 3);
+                telepoter.setCtime(tpbSaveData.getLong(path + "." + num + ".ctime"));
+                telepoters.add(telepoter);
+            }
+        }
+        return telepoters;
+    }
+
+    /**
+     * 获取公共地点
+     * @param num
+     * @return
+     */
+    public static Location getPublicTeleporterByNum(int num) {
+        String path = "public.tp." + num + ".location";
+        if (tpbSaveData.contains(path)) {
+            return (Location) tpbSaveData.get(path,null);
+        }
+        return null;
+    }
+
+    /**
+     * 获取私人地点
+     * @param uuid
+     * @param num
+     * @return
+     */
+    public static Location getPrivateTeleporterByNum(String uuid, int num) {
+        String path = "player." + uuid + ".tp." + num + ".location";
+        if (tpbSaveData.contains(path)) {
+            return (Location) tpbSaveData.get(path,null);
+        }
+        return null;
+    }
+    /**
+     * 获取死亡地点
+     * @param uuid
+     * @param num
+     * @return
+     */
+    public static Location getDeadTeleporterByNum(String uuid, int num) {
+        String path = "player." + uuid + ".dead.tp." + num + ".location";
+        if (tpbSaveData.contains(path)) {
+            return (Location) tpbSaveData.get(path,null);
+        }
+        return null;
+    }
+
+    /**
+     * 删除公共地点
+     *
+     * @param player
+     */
+    public static void delPublicTeleporter(Player player, int num) {
+        if (player.hasPermission("op")) {
+            String path = "public.tp." + num;
+            if (tpbSaveData.contains(path)) {
+                tpbSaveData.set(path, null);
+                int pCount = tpbSaveData.getInt("public.count", 0);
+                tpbSaveData.set("public.count", pCount-1);
+                saveTpbSaveData();
+            }
+            player.sendMessage("公共地点已删除");
+        }
+    }
+
+    /**
+     * 删除私人地点
+     *
+     * @param player
+     */
+    public static void delPrivateTeleporter(Player player, int num) {
+        String path = "player." + player.getUniqueId().toString();
+        if (tpbSaveData.contains(path + ".tp." + num)) {
+            tpbSaveData.set(path+ ".tp." + num, null);
+            int pCount = tpbSaveData.getInt(path + ".count", 0);
+            tpbSaveData.set(path + ".count", pCount-1);
+            saveTpbSaveData();
+        }
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.BOLD +""+ChatColor.RED + "传送点已删除"));
+    }
+    private static int getPNum(String path) {
+        int pNum = tpbSaveData.getInt(path + ".num", 0);
+        pNum = pNum == Integer.MAX_VALUE ? 0 : pNum;
+        while (tpbSaveData.contains(path + ".tp." + pNum)) {
+            pNum++;
+        }
+        return pNum;
+    }
+    public static void sendMsg(Player player, String msg){
+        player.sendTitle("",ChatColor.GREEN + msg,10,30,10);
+    }
+}
