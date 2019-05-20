@@ -4,6 +4,7 @@ amb\server\plugin\service\tpb\TpBookDataService.class
 amb\server\plugin\model\Telepoter.class
 amb\server\plugin\core\PluginCore.class
 amb\server\plugin\listener\TpBookListener.class
+amb\server\plugin\listener\TpBookListener$1.class
 amb\server\plugin\service\tpb\TpBookService.class
 amb\server\plugin\service\tpb\TpBookService$1.class
 amb\server\plugin\service\tpb\TpBookItem.class

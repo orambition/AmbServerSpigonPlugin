@@ -31,7 +31,7 @@ public class TpBookItem {
     }
 
     public static void addRecipe(JavaPlugin plugin){
-        NamespacedKey key = new NamespacedKey(plugin, "amb_plugin");
+        NamespacedKey key = new NamespacedKey(plugin, "amb_plugin_tpbook");
         ShapelessRecipe recipe = new ShapelessRecipe(key, getItem());
         recipe.addIngredient(Material.BOOK);
         recipe.addIngredient(Material.ENDER_PEARL);
