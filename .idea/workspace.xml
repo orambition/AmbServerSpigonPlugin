@@ -15,7 +15,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/listener/TpBookListener.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="413">
@@ -55,15 +55,6 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot-api/1.14-R0.1-SNAPSHOT/spigot-api-1.14-R0.1-20190512.115640-103.jar!/org/bukkit/entity/Entity.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="295">
-              <caret line="168" column="12" selection-start-line="168" selection-start-column="12" selection-end-line="168" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/tpb/TpBookService.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="156">
@@ -71,6 +62,15 @@
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="44">
+              <caret line="2" column="14" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
             </state>
           </provider>
         </entry>
@@ -179,7 +179,6 @@
         <option value="$PROJECT_DIR$/src/main/java/amb/server/plugin/command/tpbook/TpBookCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/amb/server/plugin/model/TelepoterSwitch.java" />
         <option value="$PROJECT_DIR$/src/main/java/amb/server/plugin/model/Telepoter.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/plugin.yml" />
         <option value="$PROJECT_DIR$/src/main/java/amb/server/plugin/command/TpBookCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/tpb/TpBookDataService.java" />
         <option value="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/tomahawk/TmhkItem.java" />
@@ -189,6 +188,7 @@
         <option value="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/tpb/TpBookItem.java" />
         <option value="$PROJECT_DIR$/src/main/java/amb/server/plugin/config/PluginConfig.java" />
         <option value="$PROJECT_DIR$/src/main/java/amb/server/plugin/listener/TpBookListener.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/plugin.yml" />
       </list>
     </option>
   </component>
@@ -404,7 +404,7 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32952183" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.15869017" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.15743072" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50092936" side_tool="true" weight="0.3326338" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -683,13 +683,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="13" column="23" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/HZ$D.963.1905/HZ$D.963.1906/com/shampaggon/crackshot/events/WeaponTriggerEvent.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-146">
@@ -866,6 +859,13 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="44">
+          <caret line="2" column="14" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
         </state>
       </provider>
     </entry>
