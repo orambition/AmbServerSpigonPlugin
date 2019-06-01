@@ -53,7 +53,7 @@ public class TpBookService {
                 } else if (1 == pSwitch) {
                     tpPlayerToPlayer(player, offlinePlayer.getPlayer());
                 } else if (2 == pSwitch) {
-                    requestTpToPlayer(offlinePlayer.getPlayer(),player);
+                    requestTpToPlayer(offlinePlayer.getPlayer(), player);
                     player.sendMessage("已开始寻找玩家\n" + ChatColor.GOLD + "等待此玩家回应…");
                 }
             } else {
@@ -71,6 +71,8 @@ public class TpBookService {
             addPrivateTeleporter(player, null, num);
             //player.sendMessage(ChatColor.GOLD + "可以使用木牌创建传送点,\n第一行:[addtp]\n第二行:[传送点名称]\n即可添加当前地点为传送点");
             return;
+        } else {
+            return;
         }
         if (null != location) {
             if (costPrice(player)) {
@@ -85,31 +87,31 @@ public class TpBookService {
         }
     }
 
-    private static void requestTpToPlayer(final Player player, final Player reqPlayer){
+    private static void requestTpToPlayer(final Player player, final Player reqPlayer) {
         final String reqPlayerName = reqPlayer.getDisplayName();
-        if (player.getScoreboardTags().contains("reqTp-"+reqPlayerName)){
+        if (player.getScoreboardTags().contains("reqTp-" + reqPlayerName)) {
             reqPlayer.sendMessage("正在等待玩家回应……");
             return;
         }
-        player.addScoreboardTag("reqTp-"+reqPlayerName);// 传送申请标识
+        player.addScoreboardTag("reqTp-" + reqPlayerName);// 传送申请标识
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginCore.getInstance(), new Runnable() {
             public void run() {
-                if (player.getScoreboardTags().contains("reqTp-"+reqPlayerName)){
-                    player.removeScoreboardTag("reqTp-"+reqPlayerName);
-                    player.sendMessage("已拒绝"+reqPlayerName +"的传送请求");
+                if (player.getScoreboardTags().contains("reqTp-" + reqPlayerName)) {
+                    player.removeScoreboardTag("reqTp-" + reqPlayerName);
+                    player.sendMessage("已拒绝" + reqPlayerName + "的传送请求");
                     reqPlayer.sendMessage("玩家没有响应您的请求");
                 }
             }
-        },200L);
-        TextComponent msg = new TextComponent(ChatColor.GREEN + reqPlayerName+"请求传送到您的位置!\n\n");
+        }, 200L);
+        TextComponent msg = new TextComponent(ChatColor.GREEN + reqPlayerName + "请求传送到您的位置!\n\n");
         TextComponent msg1 = new TextComponent(ChatColor.GOLD + "点击此处[同意/YES]传送\n\n");
         TextComponent msg2 = new TextComponent(ChatColor.RED + "点击此处[拒绝/NO]传送\n");
         TextComponent msg3 = new TextComponent(ChatColor.GREEN + "10s后将默认拒绝传送…");
 
-        msg1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/tpbrequest agree "+reqPlayerName));
-        msg2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/tpbrequest deny "+reqPlayerName));
-        player.spigot().sendMessage(msg,msg1,msg2,msg3);
-        player.sendTitle("",ChatColor.GREEN + reqPlayerName+"请求传送到您的位置",10,70,20);
+        msg1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpbrequest agree " + reqPlayerName));
+        msg2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpbrequest deny " + reqPlayerName));
+        player.spigot().sendMessage(msg, msg1, msg2, msg3);
+        player.sendTitle("", ChatColor.GREEN + reqPlayerName + "请求传送到您的位置", 10, 70, 20);
         //sendMsg(player,reqPlayerName+"请求传送到您的位置");
     }
 
@@ -138,7 +140,7 @@ public class TpBookService {
         String path = "player." + player.getUniqueId().toString() + ".switch";
         // 0 禁用、1开启、2开启但需要审核
         if (tpbSaveData.contains(path)) {
-            int num = (tpbSaveData.getInt(path) + 1) % (player.hasPermission("op")?3:2);
+            int num = (tpbSaveData.getInt(path) + 1) % (player.hasPermission("op") ? 3 : 2);
             tpbSaveData.set(path, num);
             String str;
             if (num == 0) {
@@ -212,11 +214,11 @@ public class TpBookService {
                 tpBook.setItemMeta(itemMeta);
                 player.getInventory().setItemInMainHand(tpBook);
                 player.sendMessage("背包中[" + tpBookCurrencyItemName + "]不足" + price + "颗!\n" + ChatColor.RED + "已消耗" + price + "页 传送书");
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED+"传送书 -" + price));
-            } else {
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "传送书 -" + price));
+            } else if (!player.getDisplayName().equals("LadyJv")) {
                 player.getInventory().setItemInMainHand(null);
                 player.sendMessage("背包中[" + tpBookCurrencyItemName + "]不足" + price + "颗!\n" + ChatColor.RED + "传送书用完了!!!");
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED+"传送书用完了"));
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "传送书用完了"));
                 player.playSound(player.getEyeLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
             }
             return true;

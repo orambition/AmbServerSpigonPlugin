@@ -33,32 +33,39 @@ public class TpBookGUI {
         List<Telepoter> deadTeleporters = getPlayerDeadTeleporter(uuid);
         int switchTeleporter = TpBookService.getTeleporterSwitch(uuid);
 
-        int slotCount = (int) (9 * (1 +Math.ceil(publicTeleporters.size()/9D)+ Math.ceil((onlinePlayers.size()-1)/9D) + Math.ceil(privateTeleporters.size()/9D)));
+        int slotCount = (int) (9 * (1 + Math.ceil(publicTeleporters.size() / 9D) + Math.ceil((onlinePlayers.size() - 1) / 9D) + Math.ceil(privateTeleporters.size() / 9D)));
         Inventory inventory = Bukkit.createInventory(null, slotCount, PluginConfig.tpBookMenuTitle);
         int num = 0;
         // 公共地址
         for (Telepoter telepoter : publicTeleporters) {
             inventory.setItem(num++, buildMenuItem(telepoter.getItemType(), telepoter.getName(), telepoter.getNum(), telepoter.getItemLore()));
-        } num = (int) (Math.ceil(num/9D) * 9);
+        }
+        num = (int) (Math.ceil(num / 9D) * 9);
         // 在线玩家
         for (Player p : onlinePlayers) {
-            if (!p.getUniqueId().toString().equals(uuid)){
+            if (!p.getUniqueId().toString().equals(uuid)) {
                 inventory.setItem(num++, buildMenuItem(p));
             }
-        } num = (int) (Math.ceil(num/9D) * 9);
+        }
+        num = (int) (Math.ceil(num / 9D) * 9);
         // 私人地点
         for (Telepoter telepoter : privateTeleporters) {
             inventory.setItem(num++, buildMenuItem(telepoter.getItemType(), telepoter.getName(), telepoter.getNum(), telepoter.getItemLore()));
-        } num = (int) (Math.ceil(num/9D) * 9);
+        }
+        num = (int) (Math.ceil(num / 9D) * 9);
         // 传送开关
         inventory.setItem(num++, buildSwitchMenuItem(switchTeleporter));
         // 死亡地点
-        for (Telepoter telepoter : deadTeleporters) {
-            inventory.setItem(num++, buildMenuItem(telepoter.getItemType(), telepoter.getName(), telepoter.getNum(), telepoter.getItemLore()));
+        if (deadTeleporters.size() == 0) {
+            inventory.setItem(num++, buildDeadInfoMenuItem());
+        } else {
+            for (Telepoter telepoter : deadTeleporters) {
+                inventory.setItem(num++, buildMenuItem(telepoter.getItemType(), telepoter.getName(), telepoter.getNum(), telepoter.getItemLore()));
+            }
         }
         num += 8 - num % 9;
         // 新增私人地点
-        inventory.setItem(num, buildAddMenuItem((int) Math.pow(tpBookAddTpPrice,privateTeleporters.size()+1)));
+        inventory.setItem(num, buildAddMenuItem((int) Math.pow(tpBookAddTpPrice, privateTeleporters.size() + 1)));
         return inventory;
     }
 
@@ -82,9 +89,9 @@ public class TpBookGUI {
         itemMeta.setOwningPlayer(player);
         List<String> lore = new ArrayList<String>();
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "点击传送至此玩家");
-        lore.add(ChatColor.RESET +""+ ChatColor.RED +"此操作将花费:");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD +"- ["+ tpBookCurrencyItemName + "x" +tpBookAddTpPrice +"] 或:");
-        lore.add(ChatColor.GREEN + "- ["+tpBookAddTpPrice+"页]传送书");
+        lore.add(ChatColor.RESET + "" + ChatColor.RED + "此操作将花费:");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "- [" + tpBookCurrencyItemName + "x" + tpBookAddTpPrice + "] 或:");
+        lore.add(ChatColor.GREEN + "- [" + tpBookAddTpPrice + "页]传送书");
 
         itemMeta.setLore(lore);
         itemStack.setItemMeta(itemMeta);
@@ -128,11 +135,27 @@ public class TpBookGUI {
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         List<String> lore = new ArrayList<String>();
         lore.add(ChatColor.RESET + "点击将所在位置标记为传送点");
-        lore.add(ChatColor.RESET +""+ ChatColor.RED +"此操作将花费:");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "- ["+tpBookCurrencyItemName + "x" +price+"]");
-        if (price < 10){
-            lore.add(ChatColor.GREEN + "或:["+price*100+"点经验值]");
+        lore.add(ChatColor.RESET + "" + ChatColor.RED + "此操作将花费:");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "- [" + tpBookCurrencyItemName + "x" + price + "]");
+        if (price < 10) {
+            lore.add(ChatColor.GREEN + "或:[" + price * 100 + "点经验值]");
         }
+        itemMeta.setLore(lore);
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
+    }
+
+    private static ItemStack buildDeadInfoMenuItem() {
+        ItemStack itemStack = new ItemStack(deadInfoItem, 1);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.GOLD + "再续前缘");
+        List<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.RESET + "携带传送书死亡时");
+        lore.add(ChatColor.RESET + "死亡地点会被记录");
+        lore.add(ChatColor.RESET + "" + ChatColor.RED + "并消耗一本传送书!");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "复活后会立即获得:");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "[一次] 传送机会!");
+
         itemMeta.setLore(lore);
         itemStack.setItemMeta(itemMeta);
         return itemStack;

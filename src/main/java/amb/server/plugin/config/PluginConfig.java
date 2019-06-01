@@ -22,6 +22,7 @@ public class PluginConfig {
     public static Material publicTpItem;
     public static Material privateTpItem;
     public static Material deadTpItem;
+    public static Material deadInfoItem; // 传送书死亡机制的介绍
     public static Material switchTpItem;
     public static Material switchOffTpItem;
     public static Material addPrivateTpItem;
@@ -45,6 +46,7 @@ public class PluginConfig {
         pluginConfig.addDefault("tpb.book.menu.item.publictp",Material.END_CRYSTAL.toString());
         pluginConfig.addDefault("tpb.book.menu.item.privatetp",Material.OAK_SIGN.toString());
         pluginConfig.addDefault("tpb.book.menu.item.deadtp",Material.TOTEM_OF_UNDYING.toString());
+        pluginConfig.addDefault("tpb.book.menu.item.deadinfo",Material.GOLDEN_APPLE.toString());
         pluginConfig.addDefault("tpb.book.menu.item.switchtp",Material.LEVER.toString());
         pluginConfig.addDefault("tpb.book.menu.item.switchofftp",Material.BARRIER.toString());
         pluginConfig.addDefault("tpb.book.menu.item.addprivatetp",Material.BIRCH_SIGN.toString());
@@ -63,7 +65,8 @@ public class PluginConfig {
         tpBookItem = Material.getMaterial(pluginConfig.getString("tpb.book.item"));
         publicTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.publictp"));
         privateTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.privatetp"));
-        deadTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.deadtp"));
+        deadTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.deadinfo"));
+        deadInfoItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.deadtp"));
         switchTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.switchtp"));
         switchOffTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.switchofftp"));
         addPrivateTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.addprivatetp"));
