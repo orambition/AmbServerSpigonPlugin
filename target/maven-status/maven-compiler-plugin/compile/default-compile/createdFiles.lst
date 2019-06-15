@@ -1,11 +1,13 @@
-amb\server\plugin\command\TpBookCommand.class
-amb\server\plugin\config\PluginConfig.class
 amb\server\plugin\service\tpb\TpBookDataService.class
 amb\server\plugin\model\Telepoter.class
 amb\server\plugin\core\PluginCore.class
 amb\server\plugin\listener\TpBookListener.class
-amb\server\plugin\listener\TpBookListener$1.class
-amb\server\plugin\service\tpb\TpBookService.class
+amb\server\plugin\listener\ManageListener.class
 amb\server\plugin\service\tpb\TpBookService$1.class
+amb\server\plugin\config\GameRuleConfig.class
+amb\server\plugin\command\TpBookCommand.class
+amb\server\plugin\config\PluginConfig.class
+amb\server\plugin\listener\ManageListener$1.class
+amb\server\plugin\service\tpb\TpBookService.class
 amb\server\plugin\service\tpb\TpBookItem.class
 amb\server\plugin\service\tpb\TpBookGUI.class

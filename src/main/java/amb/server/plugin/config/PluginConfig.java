@@ -13,8 +13,8 @@ public class PluginConfig {
 
     public static FileConfiguration pluginConfig;
     public static FileConfiguration tpbSaveData;
-
     private static File tpbSaveDataFile;
+    public static GameRuleConfig gameRuleConfig;
     public static String tpBookTitle;
     public static String tpBookMenuTitle;
     public static int tpBookPageMax;// 默认可以消耗的点数，没有通货时将消耗此点数
@@ -39,6 +39,8 @@ public class PluginConfig {
     }
     private static void getPluginConfig(JavaPlugin plugin){
         pluginConfig = plugin.getConfig();
+        pluginConfig.addDefault("server.manage.gamerule.mobGriefing",false);
+        pluginConfig.addDefault("server.manage.gamerule.doFireTick",false);
         pluginConfig.addDefault("tpb.book.item", Material.ENCHANTED_BOOK.toString());
         pluginConfig.addDefault("tpb.book.title", ChatColor.RESET + "" + ChatColor.BOLD + "传送书");
         pluginConfig.addDefault("tpb.book.canusecount", 10);
@@ -59,6 +61,8 @@ public class PluginConfig {
         pluginConfig.addDefault("tpb.book.currency.addtpbase",2);
         pluginConfig.options().copyDefaults(true);
         plugin.saveConfig();
+        gameRuleConfig = new GameRuleConfig(pluginConfig.getBoolean("server.manage.gamerule.mobGriefing",false),
+                pluginConfig.getBoolean("server.manage.gamerule.doFireTick",false));
         tpBookTitle = pluginConfig.getString("tpb.book.title");
         tpBookMenuTitle = pluginConfig.getString("tpb.book.menu.title");
         tpBookPageMax = pluginConfig.getInt("tpb.book.canusecount",10);
