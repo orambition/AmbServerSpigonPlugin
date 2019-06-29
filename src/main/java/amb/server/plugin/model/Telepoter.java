@@ -48,11 +48,13 @@ public class Telepoter {
         switch (type){
             case 1:
                 lore.add(ChatColor.RESET + "创建者:"+this.getAuthor());
+                lore.add(ChatColor.GREEN + "Shift+鼠标左键 设置为快速传送点");
                 break;
             case 2:
                 lore.add(ChatColor.RESET + this.getWorld());
                 lore.add(ChatColor.RESET + this.getXYZ());
                 lore.add(ChatColor.RED + "Shift+鼠标右键 可删除地点");
+                lore.add(ChatColor.GREEN + "Shift+鼠标左键 设置为快速传送点");
                 break;
             case 3:
                 lore.add(ChatColor.RESET + "时间:"+this.getCtimeShow());

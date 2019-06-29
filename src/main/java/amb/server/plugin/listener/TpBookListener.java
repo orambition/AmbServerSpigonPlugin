@@ -29,7 +29,13 @@ public class TpBookListener implements Listener {
         ItemStack item = event.getItem();
         if (item.getType().equals(PluginConfig.tpBookItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)) {
             event.setCancelled(true);
-            TpBookGUI.openBook(event.getPlayer());
+            Player player = event.getPlayer();
+            if (player.isSneaking()) {
+                // 前行(Shift+)时，进行快速传送
+                TpBookService.doShiftClickAction(player);
+            }else {
+                TpBookGUI.openBook(event.getPlayer());
+            }
         }
     }
 
@@ -44,7 +50,8 @@ public class TpBookListener implements Listener {
                 player.updateInventory();
                 player.closeInventory();
                 boolean delete = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isRightClick();
-                TpBookService.doClickAction(player, clickedItem, delete);
+                boolean setFast = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isLeftClick();
+                TpBookService.doClickAction(player, clickedItem, delete, setFast);
             }
         }
     }
@@ -52,8 +59,8 @@ public class TpBookListener implements Listener {
     @EventHandler
     public void onPlayerDead(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        for(ItemStack item : event.getDrops()){
-            if (item.getType().equals(PluginConfig.tpBookItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)){
+        for (ItemStack item : event.getDrops()) {
+            if (item.getType().equals(PluginConfig.tpBookItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)) {
                 event.getDrops().remove(item);
                 player.addScoreboardTag("deadTp-haveBook");
                 addPlayerDeadTeleporter(event.getEntity());
@@ -64,9 +71,9 @@ public class TpBookListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event){
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (player.getScoreboardTags().contains("deadTp-haveBook")){
+        if (player.getScoreboardTags().contains("deadTp-haveBook")) {
             // 玩家死前有传送书
             player.removeScoreboardTag("deadTp-haveBook");
             player.getInventory().setItemInMainHand(TpBookItem.getItem(tpBookTpPrice));

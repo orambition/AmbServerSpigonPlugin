@@ -3,6 +3,7 @@ package amb.server.plugin.service.tpb;
 import amb.server.plugin.model.Telepoter;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -54,9 +55,9 @@ public class TpBookDataService {
             player.sendMessage(ChatColor.GOLD + "消耗["+tpBookCurrencyItemName+"x"+price+"]");
         }else {
             player.sendMessage("背包中["+tpBookCurrencyItemName+"]不足"+price+"颗!");
-            float xp = player.getTotalExperience();
+            int xp = player.getTotalExperience();
             if (price < 10 && xp >= price * 100){
-                player.setExp(xp-price*100);
+                player.setTotalExperience(xp-price*100);
                 player.sendMessage(ChatColor.GREEN+"已消耗"+price*100+"点[经验值],剩余:"+(xp-price*100));
             }else {
                 player.sendMessage(ChatColor.RED+"无法添加新的传送点");
@@ -104,6 +105,22 @@ public class TpBookDataService {
         player.sendMessage(ChatColor.GREEN+"死亡地点已记录");
     }
 
+    /**
+     * 存储快速传送点
+     * @param player
+     * @param telepoter
+     */
+    public static void setFastTeleporter(Player player,Telepoter telepoter){
+        if (null != telepoter && StringUtils.isNotBlank(telepoter.getName()) && null != telepoter.getLocation()){
+            String path = "player." + player.getUniqueId().toString() + ".fast.tp";
+            tpbSaveData.set(path + ".name", telepoter.getName());
+            tpbSaveData.set(path + ".location", telepoter.getLocation());
+            saveTpbSaveData();
+            player.sendMessage(ChatColor.GREEN+"快速传送点已更新");
+        }else {
+            player.sendMessage(ChatColor.RED+"快速传送点设置失败");
+        }
+    }
     /**
      * 获取所有公共地点
      */
@@ -161,10 +178,14 @@ public class TpBookDataService {
      * @param num
      * @return
      */
-    public static Location getPublicTeleporterByNum(int num) {
-        String path = "public.tp." + num + ".location";
+    public static Telepoter getPublicTeleporterByNum(int num) {
+        String path = "public.tp." + num;
         if (tpbSaveData.contains(path)) {
-            return (Location) tpbSaveData.get(path,null);
+            Telepoter telepoter = new Telepoter(String.valueOf(num),
+                    tpbSaveData.getString(path + ".name",null),
+                    (Location)tpbSaveData.get(path + ".location",null),
+                    1);
+            return telepoter;
         }
         return null;
     }
@@ -175,23 +196,49 @@ public class TpBookDataService {
      * @param num
      * @return
      */
-    public static Location getPrivateTeleporterByNum(String uuid, int num) {
-        String path = "player." + uuid + ".tp." + num + ".location";
+    public static Telepoter getPrivateTeleporterByNum(String uuid, int num) {
+        String path = "player." + uuid + ".tp." + num;
         if (tpbSaveData.contains(path)) {
-            return (Location) tpbSaveData.get(path,null);
+            Telepoter telepoter = new Telepoter(String.valueOf(num),
+                    tpbSaveData.getString(path + ".name",null),
+                    (Location)tpbSaveData.get(path + ".location",null),
+                    1);
+            return telepoter;
         }
         return null;
     }
+
+    /**
+     * 获取玩家快速传送点
+     * @param uuid
+     * @return
+     */
+    public static Telepoter getPrivateFastTeleporter(String uuid) {
+        String path = "player." + uuid + ".fast.tp";
+        if (tpbSaveData.contains(path)) {
+            Telepoter telepoter = new Telepoter("",
+                    tpbSaveData.getString(path + ".name",null),
+                    (Location)tpbSaveData.get(path + ".location",null),
+                    1);
+            return telepoter;
+        }
+        return null;
+    }
+
     /**
      * 获取死亡地点
      * @param uuid
      * @param num
      * @return
      */
-    public static Location getDeadTeleporterByNum(String uuid, int num) {
-        String path = "player." + uuid + ".dead.tp." + num + ".location";
+    public static Telepoter getDeadTeleporterByNum(String uuid, int num) {
+        String path = "player." + uuid + ".dead.tp." + num;
         if (tpbSaveData.contains(path)) {
-            return (Location) tpbSaveData.get(path,null);
+            Telepoter telepoter = new Telepoter(String.valueOf(num),
+                    tpbSaveData.getString(path + ".name",null),
+                    (Location)tpbSaveData.get(path + ".location",null),
+                    1);
+            return telepoter;
         }
         return null;
     }

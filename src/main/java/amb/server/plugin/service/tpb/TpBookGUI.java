@@ -63,7 +63,9 @@ public class TpBookGUI {
                 inventory.setItem(num++, buildMenuItem(telepoter.getItemType(), telepoter.getName(), telepoter.getNum(), telepoter.getItemLore()));
             }
         }
-        num += 8 - num % 9;
+        num += 7 - num % 9;
+        // 私人快速传送点
+        inventory.setItem(num++, buildFastInfoMenuItem(uuid));
         // 新增私人地点
         inventory.setItem(num, buildAddMenuItem((int) Math.pow(tpBookAddTpPrice, privateTeleporters.size() + 1)));
         return inventory;
@@ -155,6 +157,37 @@ public class TpBookGUI {
         lore.add(ChatColor.RESET + "" + ChatColor.RED + "并消耗一本传送书!");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "复活后会立即获得:");
         lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "[一次] 传送机会!");
+
+        itemMeta.setLore(lore);
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
+    }
+
+    /**
+     * 设置快速传送点菜单
+     * @param uuid
+     * @return
+     */
+    private static ItemStack buildFastInfoMenuItem(String uuid) {
+        ItemStack itemStack = new ItemStack(privateFastTpItem, 1);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.GOLD + "快速传送点");
+        List<String> lore = new ArrayList<String>();
+
+        Telepoter telepoter = getPrivateFastTeleporter(uuid);
+        if (null != telepoter){
+            lore.add(ChatColor.RESET + "" + ChatColor.GREEN + "当前地点为:");
+            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "["+telepoter.getName()+"]");
+            lore.add(ChatColor.RESET + "当[手持传送书]时");
+            lore.add(ChatColor.RESET + "以[潜行状态]打开传送书");
+            lore.add(ChatColor.RESET + "可快速传送至此地点");
+            lore.add(ChatColor.RESET +  "" + ChatColor.RED + "此操作同样消耗费用");
+        }else {
+            lore.add(ChatColor.RESET + "" + ChatColor.RED + "[当前地点为空]");
+            lore.add(ChatColor.RESET + "" + ChatColor.GREEN + "在[传送书菜单]使用");
+            lore.add(ChatColor.RESET + "" + ChatColor.GREEN + "[Shift+鼠标左键]");
+            lore.add(ChatColor.RESET + "" + ChatColor.GREEN + "可设置地点为快速传送点");
+        }
 
         itemMeta.setLore(lore);
         itemStack.setItemMeta(itemMeta);

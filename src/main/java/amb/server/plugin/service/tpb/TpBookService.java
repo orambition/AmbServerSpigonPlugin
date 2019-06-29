@@ -1,6 +1,7 @@
 package amb.server.plugin.service.tpb;
 
 import amb.server.plugin.core.PluginCore;
+import amb.server.plugin.model.Telepoter;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.Plugin;
 
 import java.util.Collections;
 
@@ -19,30 +19,51 @@ import static amb.server.plugin.service.tpb.TpBookDataService.*;
 
 public class TpBookService {
     /**
-     * 传送玩家
+     * 玩家shift点击传送书
+     * @param player
+     */
+    public static void doShiftClickAction(Player player){
+        Telepoter telepoter = getPrivateFastTeleporter(player.getUniqueId().toString());
+        if (telepoter != null) {
+            tpPlayerToLocation(player, telepoter.getLocation());
+        }else {
+            player.sendMessage(ChatColor.RED + "快速传送点为空，无法传送！");
+        }
+    }
+    /**
+     * 玩家点击传送菜单
      *
      * @param player
      * @param clickedItem
      */
-    public static void doClickAction(Player player, ItemStack clickedItem, boolean delete) {
+    public static void doClickAction(Player player, ItemStack clickedItem, boolean delete, boolean setFast) {
         Material type = clickedItem.getType();
+        String playerUUID = player.getUniqueId().toString();
         // 自定义变量，用于传递地点编号
         int num = clickedItem.getItemMeta().getEnchantLevel(Enchantment.DAMAGE_ALL);
-        Location location = null;
+        Telepoter telepoter = null;
         if (type == publicTpItem) {
             // 公共
             if (delete) {
                 delPublicTeleporter(player, num);
                 return;
             }
-            location = getPublicTeleporterByNum(num);
+            telepoter = getPublicTeleporterByNum(num);
+            if (setFast){
+                setFastTeleporter(player, telepoter);
+                return;
+            }
         } else if (type == privateTpItem) {
             // 私人
             if (delete) {
                 delPrivateTeleporter(player, num);
                 return;
             }
-            location = getPrivateTeleporterByNum(player.getUniqueId().toString(), num);
+            telepoter = getPrivateTeleporterByNum(playerUUID, num);
+            if (setFast){
+                setFastTeleporter(player, telepoter);
+                return;
+            }
         } else if (type == Material.PLAYER_HEAD) {
             // 在线玩家
             OfflinePlayer offlinePlayer = ((SkullMeta) clickedItem.getItemMeta()).getOwningPlayer();
@@ -62,7 +83,7 @@ public class TpBookService {
             return;
         } else if (type == deadTpItem) {
             // 死亡地点
-            location = getDeadTeleporterByNum(player.getUniqueId().toString(), num);
+            telepoter = getDeadTeleporterByNum(playerUUID, num);
         } else if (type == switchTpItem || type == switchOffTpItem) {
             // 传送开关
             setTeleporterSwitch(player);
@@ -74,17 +95,46 @@ public class TpBookService {
         } else {
             return;
         }
-        if (null != location) {
-            if (costPrice(player)) {
-                player.teleport(location);
-                player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
-                sendMsg(player, "已传送到指定地点");
-                //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至所选地点"));
-            }
+        if (null != telepoter && null != telepoter.getLocation()){
+            tpPlayerToLocation(player, telepoter.getLocation());
         } else {
             //player.sendMessage("传送点不存在了,无法传送");
-            sendMsg(player, "传送点不存在了,无法传送");
+            sendMsg(player, "传送点不存在,无法传送");
         }
+
+    }
+
+    /**
+     * 传送玩家到地点
+     *
+     * @param player
+     * @param location
+     */
+    private static void tpPlayerToLocation(Player player, Location location) {
+        if (costPrice(player)) {
+            player.teleport(location);
+            player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
+            sendMsg(player, "已传送到指定地点");
+            //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至所选地点"));
+        }
+    }
+
+    /**
+     * 传送玩家到玩家
+     *
+     * @param player
+     * @param toPlayer
+     */
+    public static void tpPlayerToPlayer(Player player, Player toPlayer) {
+        if (costPrice(player)) {
+            player.teleport(toPlayer);
+            toPlayer.sendMessage(ChatColor.GOLD + player.getDisplayName() + "传送至此!");
+            toPlayer.playSound(toPlayer.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+            sendMsg(toPlayer, player.getDisplayName() + "传送到此处!");
+            player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
+            sendMsg(player, "传送至" + toPlayer.getDisplayName() + "身边");
+        }
+        //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至"+toPlayer.getDisplayName()));
     }
 
     private static void requestTpToPlayer(final Player player, final Player reqPlayer) {
@@ -113,24 +163,6 @@ public class TpBookService {
         player.spigot().sendMessage(msg, msg1, msg2, msg3);
         player.sendTitle("", ChatColor.GREEN + reqPlayerName + "请求传送到您的位置", 10, 70, 20);
         //sendMsg(player,reqPlayerName+"请求传送到您的位置");
-    }
-
-    /**
-     * 传送玩家到玩家
-     *
-     * @param player
-     * @param toPlayer
-     */
-    public static void tpPlayerToPlayer(Player player, Player toPlayer) {
-        if (costPrice(player)) {
-            player.teleport(toPlayer);
-            toPlayer.sendMessage(ChatColor.GOLD + player.getDisplayName() + "传送至此!");
-            toPlayer.playSound(toPlayer.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-            sendMsg(toPlayer, player.getDisplayName() + "传送到此处!");
-            player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
-            sendMsg(player, "传送至" + toPlayer.getDisplayName() + "身边");
-        }
-        //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至"+toPlayer.getDisplayName()));
     }
 
     /**

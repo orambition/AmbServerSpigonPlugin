@@ -24,6 +24,8 @@ public class TpBookItem {
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName(PluginConfig.tpBookTitle);
         itemMeta.setLore(Collections.singletonList(ChatColor.RESET + "页数:"+pageCount));
+        itemMeta.setLore(Collections.singletonList(ChatColor.GOLD + "点击可打开传送菜单"));
+        itemMeta.setLore(Collections.singletonList(ChatColor.GOLD + "[潜行状态]点击可快速传送"));
         itemMeta.addEnchant(Enchantment.DAMAGE_ALL,pageCount,true);
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
