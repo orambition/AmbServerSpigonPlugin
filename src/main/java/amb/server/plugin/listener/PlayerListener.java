@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import static amb.server.plugin.config.PluginConfig.tpBookTpPrice;
 import static amb.server.plugin.service.tpb.TpBookDataService.addPlayerDeadTeleporter;
 
-public class TpBookListener implements Listener {
+public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerOpenBook(PlayerInteractEvent event) {
