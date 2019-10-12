@@ -1,31 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="10a18636-8a43-4d47-9374-90e18d5c2f44" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/AutoPlayNavigator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/AutoPlayService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/Friday.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/FridayNavigation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/FridayPathfinder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/FridayPathfinderNormal.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerJump.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerLook.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerMove.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/network/EmptyChannel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/network/EmptyNetHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/network/EmptyNetworkManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/tools/NMSUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/amb/server/plugin/core/PluginCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/core/PluginCore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/amb/server/plugin/listener/ManageListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/listener/ManageListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/amb/server/plugin/listener/TpBookListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/amb/server/plugin/listener/PlayerListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/amb/server/plugin/core/PluginCore.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/amb/server/plugin/core/PluginCore.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/amb/server/plugin/listener/TpBookListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-    </list>
+    <list default="true" id="10a18636-8a43-4d47-9374-90e18d5c2f44" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -42,118 +18,53 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="154">
+              <caret line="7" column="50" selection-start-line="7" selection-start-column="50" selection-end-line="7" selection-end-column="50" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="44">
+              <caret line="2" column="14" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/listener/ManageListener.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="18">
+              <caret line="3" column="25" selection-start-line="3" selection-start-column="25" selection-end-line="3" selection-end-column="25" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/command/TpBookCommand.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-278">
+              <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/Friday.java">
+        <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
-              <caret line="79" column="29" lean-forward="true" selection-start-line="79" selection-start-column="29" selection-end-line="79" selection-end-column="29" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#2617#2618#0" expanded="true" />
-                <element signature="e#2665#2666#0" expanded="true" />
-                <element signature="docComment;method#addSelfToWorld#0;class#Friday#0" />
-                <element signature="method#addSelfToWorld#0;class#Friday#0" />
-                <element signature="e#4519#4520#0" expanded="true" />
-                <element signature="e#4552#4553#0" expanded="true" />
-                <element signature="e#4607#4608#0" expanded="true" />
-                <element signature="e#4644#4645#0" expanded="true" />
-                <element signature="e#4699#4700#0" expanded="true" />
-                <element signature="e#4736#4737#0" expanded="true" />
-                <element signature="e#4791#4792#0" expanded="true" />
-                <element signature="e#4828#4829#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerLook.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="790">
-              <caret line="54" column="29" selection-start-line="54" selection-start-column="25" selection-end-line="54" selection-end-column="29" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1557#1558#0" expanded="true" />
-                <element signature="e#1622#1623#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerJump.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="11" column="16" selection-start-line="11" selection-start-column="16" selection-end-line="11" selection-end-column="16" />
-              <folding>
-                <element signature="e#424#425#0" expanded="true" />
-                <element signature="e#448#449#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerMove.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="426">
-              <caret line="39" column="12" lean-forward="true" selection-start-line="39" selection-start-column="12" selection-end-line="39" selection-end-column="12" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#2109#2110#0" expanded="true" />
-                <element signature="e#2161#2162#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/org/bukkit/craftbukkit/1.14.4-R0.1-SNAPSHOT/craftbukkit-1.14.4-R0.1-SNAPSHOT.jar!/net/minecraft/server/v1_14_R1/ControllerMove.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="74">
-              <caret line="47" column="22" selection-start-line="47" selection-start-column="17" selection-end-line="47" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/AutoPlayService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-223">
-              <caret line="25" column="54" selection-start-line="25" selection-start-column="54" selection-end-line="25" selection-end-column="54" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/FridayNavigation.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="531">
-              <caret line="27" column="21" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/AutoPlayNavigator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="66">
-              <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/tools/NMSUtil.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="243">
-              <caret line="259" selection-start-line="259" selection-end-line="259" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="169">
+              <caret line="28" column="41" selection-start-line="28" selection-start-column="41" selection-end-line="28" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -305,6 +216,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -312,6 +224,11 @@
             <path>
               <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
               <item name="AmbServerSpigonPlugin" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AmbServerSpigonPlugin" type="462c0819:PsiDirectoryNode" />
+              <item name=".idea" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
@@ -389,79 +306,12 @@
               <item name="AmbServerSpigonPlugin" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AmbServerSpigonPlugin" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
-              <item name="ap" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AmbServerSpigonPlugin" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
-              <item name="ap" type="462c0819:PsiDirectoryNode" />
-              <item name="entity" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AmbServerSpigonPlugin" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
-              <item name="ap" type="462c0819:PsiDirectoryNode" />
-              <item name="entity" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AmbServerSpigonPlugin" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-              <item name="tools" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-            <path>
-              <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Maven: org.bukkit:craftbukkit:1.14.4-R0.1-SNAPSHOT" type="70bed36:NamedLibraryElementNode" />
-            </path>
-            <path>
-              <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Maven: org.bukkit:craftbukkit:1.14.4-R0.1-SNAPSHOT" type="70bed36:NamedLibraryElementNode" />
-              <item name="craftbukkit-1.14.4-R0.1-SNAPSHOT.jar" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AmbServerSpigonPlugin" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Maven: org.bukkit:craftbukkit:1.14.4-R0.1-SNAPSHOT" type="70bed36:NamedLibraryElementNode" />
-              <item name="craftbukkit-1.14.4-R0.1-SNAPSHOT.jar" type="462c0819:PsiDirectoryNode" />
-              <item name="v1_14_R1" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -512,6 +362,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1381" height="925" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="1" />
@@ -519,27 +370,55 @@
       <window_info id="UI Designer" order="3" />
       <window_info id="Capture Tool" order="4" />
       <window_info id="Favorites" order="5" sideWeight="0.50179213" side_tool="true" weight="0.22826909" />
-      <window_info content_ui="combo" id="Project" order="6" sideWeight="0.4982079" visible="true" weight="0.3053666" />
-      <window_info anchor="bottom" id="Messages" weight="0.3299748" />
+      <window_info content_ui="combo" id="Project" order="6" sideWeight="0.4982079" visible="true" weight="0.27362055" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32909784" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49907064" weight="0.29848868" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49907064" visible="true" weight="0.29848868" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32952183" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.26826197" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.26826197" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50092936" side_tool="true" weight="0.3326338" />
       <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Messages" order="10" weight="0.3299748" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Maven" order="4" weight="0.281935" />
+      <window_info anchor="right" id="Maven" order="4" weight="0.09750567" />
       <window_info anchor="right" id="Theme Preview" order="5" />
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
     </layout>
+    <layout-to-restore>
+      <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
+      <window_info id="Image Layers" order="1" />
+      <window_info id="Designer" order="2" />
+      <window_info id="UI Designer" order="3" />
+      <window_info id="Capture Tool" order="4" />
+      <window_info id="Favorites" order="5" sideWeight="0.50179213" side_tool="true" weight="0.22826909" />
+      <window_info content_ui="combo" id="Project" order="6" sideWeight="0.4982079" visible="true" weight="0.23733938" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32909784" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49811035" weight="0.29848868" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32952183" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.26700252" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50188965" side_tool="true" weight="0.29848868" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Messages" order="10" weight="0.3299748" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Theme Preview" order="4" />
+      <window_info anchor="right" id="Capture Analysis" order="5" />
+      <window_info anchor="right" id="Palette&#9;" order="6" />
+      <window_info anchor="right" id="Maven" order="7" weight="0.08692366" />
+    </layout-to-restore>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -574,8 +453,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/listener/ManageListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="27" column="71" selection-start-line="27" selection-start-column="71" selection-end-line="27" selection-end-column="71" />
+        <state relative-caret-position="18">
+          <caret line="3" column="25" selection-start-line="3" selection-start-column="25" selection-end-line="3" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -645,32 +524,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/network/EmptyChannel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#292#293#0" expanded="true" />
-            <element signature="e#321#322#0" expanded="true" />
-            <element signature="e#479#480#0" expanded="true" />
-            <element signature="e#506#507#0" expanded="true" />
-            <element signature="e#579#580#0" expanded="true" />
-            <element signature="e#606#607#0" expanded="true" />
-            <element signature="e#653#654#0" expanded="true" />
-            <element signature="e#680#681#0" expanded="true" />
-            <element signature="e#728#729#0" expanded="true" />
-            <element signature="e#755#756#0" expanded="true" />
-            <element signature="e#1144#1145#0" expanded="true" />
-            <element signature="e#1172#1173#0" expanded="true" />
-            <element signature="e#1205#1206#0" expanded="true" />
-            <element signature="e#1233#1234#0" expanded="true" />
-            <element signature="e#1274#1275#0" expanded="true" />
-            <element signature="e#1322#1323#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/network/EmptyChannel.java" />
     <entry file="jar://$MAVEN_REPOSITORY$/org/bukkit/craftbukkit/1.14.4-R0.1-SNAPSHOT/craftbukkit-1.14.4-R0.1-SNAPSHOT.jar!/net/minecraft/server/v1_14_R1/NetworkManager.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
@@ -682,18 +536,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/network/EmptyNetworkManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="11" column="47" selection-start-line="11" selection-start-column="47" selection-end-line="11" selection-end-column="47" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#581#582#0" expanded="true" />
-            <element signature="e#608#609#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/network/EmptyNetworkManager.java" />
     <entry file="jar://$MAVEN_REPOSITORY$/org/bukkit/craftbukkit/1.14.4-R0.1-SNAPSHOT/craftbukkit-1.14.4-R0.1-SNAPSHOT.jar!/net/minecraft/server/v1_14_R1/PacketListener.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="88">
@@ -762,27 +605,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/network/EmptyNetHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/PlayerControllerJump.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="3" column="22" selection-start-line="3" selection-start-column="22" selection-end-line="3" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/SkinPacketTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/network/EmptyNetHandler.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/PlayerControllerJump.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/SkinPacketTracker.java" />
     <entry file="jar://$MAVEN_REPOSITORY$/org/bukkit/craftbukkit/1.14.4-R0.1-SNAPSHOT/craftbukkit-1.14.4-R0.1-SNAPSHOT.jar!/net/minecraft/server/v1_14_R1/Pathfinder.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="519">
@@ -836,16 +661,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/EmptyAdvancementDataPlayer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/EmptyAdvancementDataPlayer.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/core/PluginCore.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="88">
@@ -853,23 +669,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/FridayPathfinderNormal.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/FridayPathfinder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="19" column="20" lean-forward="true" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/FridayPathfinderNormal.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/FridayPathfinder.java" />
     <entry file="jar://$MAVEN_REPOSITORY$/org/bukkit/craftbukkit/1.14.4-R0.1-SNAPSHOT/craftbukkit-1.14.4-R0.1-SNAPSHOT.jar!/net/minecraft/server/v1_14_R1/ControllerJump.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
@@ -905,43 +706,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/FridayNavigation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="531">
-          <caret line="27" column="21" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/AutoPlayNavigator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerJump.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" column="16" selection-start-line="11" selection-start-column="16" selection-end-line="11" selection-end-column="16" />
-          <folding>
-            <element signature="e#424#425#0" expanded="true" />
-            <element signature="e#448#449#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerLook.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="790">
-          <caret line="54" column="29" selection-start-line="54" selection-start-column="25" selection-end-line="54" selection-end-column="29" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1557#1558#0" expanded="true" />
-            <element signature="e#1622#1623#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/FridayNavigation.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/AutoPlayNavigator.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerJump.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerLook.java" />
     <entry file="jar://$MAVEN_REPOSITORY$/org/bukkit/craftbukkit/1.14.4-R0.1-SNAPSHOT/craftbukkit-1.14.4-R0.1-SNAPSHOT.jar!/net/minecraft/server/v1_14_R1/ControllerMove.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="74">
@@ -949,60 +717,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerMove.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="426">
-          <caret line="39" column="12" lean-forward="true" selection-start-line="39" selection-start-column="12" selection-end-line="39" selection-end-column="12" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2109#2110#0" expanded="true" />
-            <element signature="e#2161#2162#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/AutoPlayService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-223">
-          <caret line="25" column="54" selection-start-line="25" selection-start-column="54" selection-end-line="25" selection-end-column="54" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/tools/NMSUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="259" selection-start-line="259" selection-end-line="259" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/Friday.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="79" column="29" lean-forward="true" selection-start-line="79" selection-start-column="29" selection-end-line="79" selection-end-column="29" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2617#2618#0" expanded="true" />
-            <element signature="e#2665#2666#0" expanded="true" />
-            <element signature="docComment;method#addSelfToWorld#0;class#Friday#0" />
-            <element signature="method#addSelfToWorld#0;class#Friday#0" />
-            <element signature="e#4519#4520#0" expanded="true" />
-            <element signature="e#4552#4553#0" expanded="true" />
-            <element signature="e#4607#4608#0" expanded="true" />
-            <element signature="e#4644#4645#0" expanded="true" />
-            <element signature="e#4699#4700#0" expanded="true" />
-            <element signature="e#4736#4737#0" expanded="true" />
-            <element signature="e#4791#4792#0" expanded="true" />
-            <element signature="e#4828#4829#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/controller/PlayerControllerMove.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/AutoPlayService.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/tools/NMSUtil.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/amb/server/plugin/service/ap/entity/Friday.java" />
   </component>
   <component name="masterDetails">
     <states>
