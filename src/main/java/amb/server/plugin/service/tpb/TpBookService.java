@@ -7,11 +7,12 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.Collection;
 import java.util.Collections;
 
 import static amb.server.plugin.config.PluginConfig.*;
@@ -113,6 +114,7 @@ public class TpBookService {
     private static void tpPlayerToLocation(Player player, Location location) {
         if (costPrice(player)) {
             player.teleport(location);
+            needTpPet(player,location);
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
             sendMsg(player, "已传送到指定地点");
             //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至所选地点"));
@@ -128,6 +130,7 @@ public class TpBookService {
     public static void tpPlayerToPlayer(Player player, Player toPlayer) {
         if (costPrice(player)) {
             player.teleport(toPlayer);
+            needTpPet(player,toPlayer.getLocation());
             toPlayer.sendMessage(ChatColor.GOLD + player.getDisplayName() + "传送至此!");
             toPlayer.playSound(toPlayer.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             sendMsg(toPlayer, player.getDisplayName() + "传送到此处!");
@@ -137,6 +140,11 @@ public class TpBookService {
         //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至"+toPlayer.getDisplayName()));
     }
 
+    /**
+     * 传输至玩家时发送请求
+     * @param player
+     * @param reqPlayer
+     */
     private static void requestTpToPlayer(final Player player, final Player reqPlayer) {
         final String reqPlayerName = reqPlayer.getDisplayName();
         if (player.getScoreboardTags().contains("reqTp-" + reqPlayerName)) {
@@ -255,5 +263,25 @@ public class TpBookService {
             }
             return true;
         }
+    }
+
+    /**
+     * 传输玩家宠物
+     * @param player
+     * @param location
+     */
+    private static void needTpPet(Player player, Location location){
+        if (!player.getWorld().equals(location.getWorld())){
+            return;
+        }
+
+        Collection<Entity> pets = player.getWorld().getEntitiesByClasses(Wolf.class, Cat.class);
+        pets.forEach(e->{
+            if (((Tameable)e).isTamed()
+                    && !((Sittable)e).isSitting()
+                    && ((Tameable)e).getOwner().getUniqueId().equals(player.getUniqueId())){
+                e.teleport(location);
+            }
+        });
     }
 }
