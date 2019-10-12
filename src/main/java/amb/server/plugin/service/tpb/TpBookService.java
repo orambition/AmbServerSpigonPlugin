@@ -1,7 +1,9 @@
 package amb.server.plugin.service.tpb;
 
+import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.core.PluginCore;
 import amb.server.plugin.model.Telepoter;
+import amb.server.plugin.service.aip.entity.Friday;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -11,25 +13,30 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.PluginLogger;
 
 import java.util.Collections;
+import java.util.logging.Logger;
 
 import static amb.server.plugin.config.PluginConfig.*;
 import static amb.server.plugin.service.tpb.TpBookDataService.*;
 
 public class TpBookService {
+    private static final Logger logger = PluginLogger.getLogger("AmbSP");
     /**
      * 玩家shift点击传送书
+     *
      * @param player
      */
-    public static void doShiftClickAction(Player player){
+    public static void doShiftClickAction(Player player) {
         Telepoter telepoter = getPrivateFastTeleporter(player.getUniqueId().toString());
         if (telepoter != null) {
             tpPlayerToLocation(player, telepoter.getLocation());
-        }else {
+        } else {
             player.sendMessage(ChatColor.RED + "快速传送点为空，无法传送！");
         }
     }
+
     /**
      * 玩家点击传送菜单
      *
@@ -49,7 +56,7 @@ public class TpBookService {
                 return;
             }
             telepoter = getPublicTeleporterByNum(num);
-            if (setFast){
+            if (setFast) {
                 setFastTeleporter(player, telepoter);
                 return;
             }
@@ -60,25 +67,30 @@ public class TpBookService {
                 return;
             }
             telepoter = getPrivateTeleporterByNum(playerUUID, num);
-            if (setFast){
+            if (setFast) {
                 setFastTeleporter(player, telepoter);
                 return;
             }
         } else if (type == Material.PLAYER_HEAD) {
             // 在线玩家
+            Player tpPlayer;
             OfflinePlayer offlinePlayer = ((SkullMeta) clickedItem.getItemMeta()).getOwningPlayer();
-            if (offlinePlayer.isOnline()) {
-                int pSwitch = getTeleporterSwitch(offlinePlayer.getUniqueId().toString());
-                if (0 == pSwitch) {
-                    player.sendMessage("无法感知到玩家的气息,此玩家没有开启传送");
-                } else if (1 == pSwitch) {
-                    tpPlayerToPlayer(player, offlinePlayer.getPlayer());
-                } else if (2 == pSwitch) {
-                    requestTpToPlayer(offlinePlayer.getPlayer(), player);
-                    player.sendMessage("已开始寻找玩家\n" + ChatColor.GOLD + "等待此玩家回应…");
-                }
+            if (offlinePlayer.isOnline()){
+                tpPlayer = offlinePlayer.getPlayer();
+            } else if (offlinePlayer.getName().equals(AmbName) && PluginCore.getFriday() != null) {
+                tpPlayer = PluginCore.getFriday().getBukkitEntity();
             } else {
                 player.sendMessage("玩家已经下线了,无法传送");
+                return;
+            }
+            int pSwitch = getTeleporterSwitch(tpPlayer.getUniqueId().toString());
+            if (0 == pSwitch) {
+                player.sendMessage("无法感知到玩家的气息,此玩家没有开启传送");
+            } else if (1 == pSwitch) {
+                tpPlayerToPlayer(player, tpPlayer);
+            } else if (2 == pSwitch) {
+                requestTpToPlayer(tpPlayer, player);
+                player.sendMessage("已开始寻找玩家\n" + ChatColor.GOLD + "等待此玩家回应…");
             }
             return;
         } else if (type == deadTpItem) {
@@ -95,7 +107,7 @@ public class TpBookService {
         } else {
             return;
         }
-        if (null != telepoter && null != telepoter.getLocation()){
+        if (null != telepoter && null != telepoter.getLocation()) {
             tpPlayerToLocation(player, telepoter.getLocation());
         } else {
             //player.sendMessage("传送点不存在了,无法传送");

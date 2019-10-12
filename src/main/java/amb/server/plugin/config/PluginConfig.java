@@ -10,11 +10,13 @@ import java.io.File;
 import java.io.IOException;
 
 public class PluginConfig {
+    public static final String AmbName = "Mr_Amb";
 
-    public static FileConfiguration pluginConfig;
+    private static FileConfiguration pluginConfig;
     public static FileConfiguration tpbSaveData;
     private static File tpbSaveDataFile;
     public static GameRuleConfig gameRuleConfig;
+
     public static String tpBookTitle;
     public static String tpBookMenuTitle;
     public static int tpBookPageMax;// 默认可以消耗的点数，没有通货时将消耗此点数
@@ -34,6 +36,7 @@ public class PluginConfig {
     public static int publicTpMax;
     public static int tpBookTpPrice;// 传送消耗通货的数量
     public static int tpBookAddTpPrice;// 新增传送点消耗通货的基础数量，指数增长
+
     public static void init(JavaPlugin plugin){
         getPluginConfig(plugin);
         getTpbSaveData(plugin);

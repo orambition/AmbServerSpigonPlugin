@@ -1,4 +1,4 @@
-package amb.server.plugin.service.ap.network;
+package amb.server.plugin.service.aip.network;
 
 import amb.server.plugin.tools.NMSUtil;
 import io.netty.util.concurrent.GenericFutureListener;

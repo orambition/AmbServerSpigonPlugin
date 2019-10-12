@@ -9,6 +9,9 @@ commands:
     permission: op
     permission-message: You not have permission to use this command.
     usage: "/tpb <add> [name]"
-  tpbrequest:
+  tpbRequest:
     description: tpbook request tp command
     usage: "/tpbrequest <agree/deny> [name]"
+  friday:
+    description: control friday
+    permission-message: You not have permission to use this command.

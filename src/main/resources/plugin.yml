@@ -1,6 +1,6 @@
 name: AmbServerPlugin
 author: Mr_Amb
-version: 1.0.1
+version: 1.1.0
 main: amb.server.plugin.core.PluginCore
 api-version: 1.14
 commands:
@@ -9,6 +9,9 @@ commands:
     permission: op
     permission-message: You not have permission to use this command.
     usage: "/tpb <add> [name]"
-  tpbrequest:
+  tpbRequest:
     description: tpbook request tp command
     usage: "/tpbrequest <agree/deny> [name]"
+  friday:
+    description: control friday
+    permission-message: You not have permission to use this command.

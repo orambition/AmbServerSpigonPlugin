@@ -1,6 +1,6 @@
-package amb.server.plugin.service.ap.entity.controller;
+package amb.server.plugin.service.aip.entity.controller;
 
-import amb.server.plugin.service.ap.entity.Friday;
+import amb.server.plugin.service.aip.entity.Friday;
 import amb.server.plugin.tools.NMSUtil;
 import net.minecraft.server.v1_14_R1.*;
 
@@ -9,7 +9,6 @@ import java.util.Random;
 public class PlayerControllerMove extends ControllerMove {
     protected EntityLiving a;
     protected boolean f;
-    private int h;
 
     public PlayerControllerMove(EntityLiving var0) {
         super(var0 instanceof EntityInsentient ? (EntityInsentient)var0 :
@@ -26,10 +25,12 @@ public class PlayerControllerMove extends ControllerMove {
         if (this.f) {
             this.f = false;
             int i = MathHelper.floor(this.a.getBoundingBox().minY + 0.5D);
+            // 目的地到当前位置距离
             double d0 = this.b - this.a.locX;
             double d1 = this.d - this.a.locZ;
             double d2 = this.c - i;
             double d3 = d0 * d0 + d2 * d2 + d1 * d1;
+            //
             if (d3 < 2.500000277905201E-007D) {
                 this.a.bd = 0.0F;
                 return;
@@ -45,10 +46,8 @@ public class PlayerControllerMove extends ControllerMove {
             }
             float movement = (float) (this.e * speed.getValue());
             this.a.o(movement);
-            this.a.bd = movement;
+            this.a.bd = movement;// 设置向前的移动速度
             if (((d2 > 0.0D) && (d0 * d0 + d1 * d1 < 1.0D))) {
-                this.h = cg();
-                this.h /= 3;
                 if (this.a instanceof Friday) {
                     ((Friday) this.a).getControllerJump().jump();
                 } else {
@@ -62,11 +61,11 @@ public class PlayerControllerMove extends ControllerMove {
         return new Random().nextInt(20) + 10;
     }
     @Override
-    public void a(double d0, double d1, double d2, double d3) {
-        this.b = d0;
-        this.c = d1;
-        this.d = d2;
-        this.e = d3;
+    public void a(double x, double y, double z, double speed) {
+        this.b = x;
+        this.c = y;
+        this.d = z;
+        this.e = speed;
         this.f = true;
     }
 

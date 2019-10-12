@@ -1,5 +1,7 @@
 package amb.server.plugin.command;
 
+import amb.server.plugin.config.PluginConfig;
+import amb.server.plugin.core.PluginCore;
 import amb.server.plugin.service.tpb.TpBookService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -7,11 +9,21 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import static amb.server.plugin.service.tpb.TpBookDataService.addPublicTeleporter;
 
 public class TpBookCommand implements CommandExecutor {
-
+    /**
+     *
+     * @param commandSender ÇëÇóÕß
+     * @param command
+     * @param s
+     * @param strings
+     * @return
+     */
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (commandSender instanceof Player){
             if ("tpb".equals(s) && strings.length > 0){

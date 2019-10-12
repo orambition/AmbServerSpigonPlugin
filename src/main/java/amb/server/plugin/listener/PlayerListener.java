@@ -1,19 +1,27 @@
 package amb.server.plugin.listener;
 
 import amb.server.plugin.config.PluginConfig;
+import amb.server.plugin.service.aip.AutoPlayService;
+import amb.server.plugin.service.aip.entity.Friday;
 import amb.server.plugin.service.tpb.TpBookGUI;
 import amb.server.plugin.service.tpb.TpBookItem;
 import amb.server.plugin.service.tpb.TpBookService;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import static amb.server.plugin.config.PluginConfig.tpBookTpPrice;
@@ -22,20 +30,32 @@ import static amb.server.plugin.service.tpb.TpBookDataService.addPlayerDeadTelep
 public class PlayerListener implements Listener {
 
     @EventHandler
-    public void onPlayerOpenBook(PlayerInteractEvent event) {
-        if (!event.hasItem()) {
-            return;
-        }
-        ItemStack item = event.getItem();
-        if (item.getType().equals(PluginConfig.tpBookItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)) {
-            event.setCancelled(true);
-            Player player = event.getPlayer();
-            if (player.isSneaking()) {
-                // 前行(Shift+)时，进行快速传送
-                TpBookService.doShiftClickAction(player);
-            }else {
-                TpBookGUI.openBook(event.getPlayer());
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
+        if (event.hasItem()) {
+            // 打开传送书
+            ItemStack item = event.getItem();
+            if (item.getType().equals(PluginConfig.tpBookItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)) {
+                event.setCancelled(true);
+                Player player = event.getPlayer();
+                if (player.isSneaking()) {
+                    // 前行(Shift+)时，进行快速传送
+                    TpBookService.doShiftClickAction(player);
+                } else {
+                    TpBookGUI.openBook(event.getPlayer());
+                }
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
+        if (event.getRightClicked().hasMetadata(Friday.NPC_FLAG)) {
+            // 玩家右键了friday
+            Player player = event.getPlayer();
+            Player friday = (Player) event.getRightClicked();
+            Inventory inventory = Bukkit.createInventory(null, InventoryType.CHEST);
+            inventory.setContents(AutoPlayService.getInventory(friday));
+            player.openInventory(inventory);
         }
     }
 

@@ -1,4 +1,4 @@
-package amb.server.plugin.service.ap.network;
+package amb.server.plugin.service.aip.network;
 
 import net.minecraft.server.v1_14_R1.*;
 

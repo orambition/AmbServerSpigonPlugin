@@ -1,6 +1,7 @@
 package amb.server.plugin.service.tpb;
 
 import amb.server.plugin.config.PluginConfig;
+import amb.server.plugin.core.PluginCore;
 import amb.server.plugin.model.Telepoter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,16 +24,17 @@ import static amb.server.plugin.service.tpb.TpBookDataService.*;
 public class TpBookGUI {
 
     public static void openBook(Player player) {
-        player.openInventory(getInventoryMenu(player.getUniqueId().toString()));
+        player.openInventory(getInventoryMenu(player));
     }
 
-    private static Inventory getInventoryMenu(String uuid) {
+    private static Inventory getInventoryMenu(Player player) {
+        String uuid = player.getUniqueId().toString();
         List<Telepoter> publicTeleporters = getAllPublicTeleporter();
-        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+        List<Player> onlinePlayers = player.getWorld().getPlayers();
         List<Telepoter> privateTeleporters = getPlayerPrivateTeleporter(uuid);
         List<Telepoter> deadTeleporters = getPlayerDeadTeleporter(uuid);
         int switchTeleporter = TpBookService.getTeleporterSwitch(uuid);
-
+        //int playerCount = PluginCore.getFriday() != null ? onlinePlayers.size() : (onlinePlayers.size() - 1);
         int slotCount = (int) (9 * (1 + Math.ceil(publicTeleporters.size() / 9D) + Math.ceil((onlinePlayers.size() - 1) / 9D) + Math.ceil(privateTeleporters.size() / 9D)));
         Inventory inventory = Bukkit.createInventory(null, slotCount, PluginConfig.tpBookMenuTitle);
         int num = 0;

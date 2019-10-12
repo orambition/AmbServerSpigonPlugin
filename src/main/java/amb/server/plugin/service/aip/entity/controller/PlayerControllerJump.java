@@ -1,6 +1,6 @@
-package amb.server.plugin.service.ap.entity.controller;
+package amb.server.plugin.service.aip.entity.controller;
 
-import amb.server.plugin.service.ap.entity.Friday;
+import amb.server.plugin.service.aip.entity.Friday;
 
 public class PlayerControllerJump {
     private boolean a;

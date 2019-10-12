@@ -6,7 +6,7 @@
 
     <groupId>Ambition.Server</groupId>
     <artifactId>AmbServerSpigonPlugin</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
     <build>
         <plugins>
             <plugin>
@@ -15,6 +15,16 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- 指定打包的jar包输出路径-->
+                    <outputDirectory>
+                        C:/Users/oramb/Downloads/SpigotServer/SpigotServer-1.14/plugins/
+                    </outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
