@@ -19,7 +19,7 @@ public class FoundTask extends AiTaskAbstract {
     private Location oldLocation;
     private ChunkSnapshot chunkSnapshot;
 
-    public FounopdTask(Friday friday, Material material, int needFoundNum) {
+    public FoundTask(Friday friday, Material material, int needFoundNum) {
         super(friday);
         world = playerFriday.getWorld();
         needFoundMaterial = material;
