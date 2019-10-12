@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>Ambition.Server</groupId>
-    <artifactId>AmbServerSpigonPlugin</artifactId>
+    <artifactId>AmbServerSpigotPlugin</artifactId>
     <version>1.0.4</version>
     <build>
         <plugins>
