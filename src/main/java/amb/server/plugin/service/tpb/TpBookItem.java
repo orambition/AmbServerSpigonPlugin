@@ -1,6 +1,7 @@
 package amb.server.plugin.service.tpb;
 
 import amb.server.plugin.config.PluginConfig;
+import amb.server.plugin.service.tools.GUITools;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,7 +13,8 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TpBookItem {
 
@@ -23,14 +25,19 @@ public class TpBookItem {
         ItemStack item = new ItemStack(PluginConfig.tpBookItem,1);
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName(PluginConfig.tpBookTitle);
-        itemMeta.setLore(Collections.singletonList(ChatColor.RESET + "页数:"+pageCount));
-        itemMeta.setLore(Collections.singletonList(ChatColor.GOLD + "点击可打开传送菜单"));
-        itemMeta.setLore(Collections.singletonList(ChatColor.GOLD + "[潜行状态]点击可快速传送"));
+        itemMeta.setLore(getBookItemLore(pageCount));
         itemMeta.addEnchant(Enchantment.DAMAGE_ALL,pageCount,true);
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         item.setItemMeta(itemMeta);
         return item;
+    }
+
+    public static List<String> getBookItemLore(int pageCount){
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.RESET + "页数:"+ GUITools.buildBatter(pageCount, PluginConfig.tpBookPageMax));
+        lore.add(ChatColor.GOLD + "[潜行状态]点击可快速传送");
+        return lore;
     }
 
     public static void addRecipe(JavaPlugin plugin){

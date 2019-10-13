@@ -17,6 +17,16 @@
                     <target>8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- 指定打包的jar包输出路径-->
+                    <outputDirectory>
+                        C:/Users/oramb/Downloads/SpigotServer/SpigotServer-1.14/plugins/
+                    </outputDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

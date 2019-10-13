@@ -88,12 +88,12 @@ public class TpBookDataService {
         String path = "player." + player.getUniqueId().toString() + ".dead";
 
         int pCount = tpbSaveData.getInt(path + ".count", 0);
-        if (pCount == deadTpMax) {
+        while (pCount >= deadTpMax) {
             String num = tpbSaveData.getConfigurationSection(path + ".tp").getKeys(false).iterator().next();
             tpbSaveData.set(path + ".tp." + num, null);
-        }else {
-            tpbSaveData.set(path + ".count", pCount + 1);
+            pCount--;
         }
+        tpbSaveData.set(path + ".count", pCount + 1);
 
         int pNum = getPNum(path);
         tpbSaveData.set(path + ".tp." + pNum + ".name", "死亡地点" + (pNum+1));
@@ -121,6 +121,23 @@ public class TpBookDataService {
             player.sendMessage(ChatColor.RED+"快速传送点设置失败");
         }
     }
+
+    /**
+     * 存储前一地点
+     * @param player
+     * @param telepoter
+     */
+    public static void setBegoreTeleporter(Player player,Telepoter telepoter){
+        if (null != telepoter && StringUtils.isNotBlank(telepoter.getName()) && null != telepoter.getLocation()){
+            String path = "player." + player.getUniqueId().toString() + ".before.tp";
+            tpbSaveData.set(path + ".name", telepoter.getName());
+            tpbSaveData.set(path + ".location", telepoter.getLocation());
+            saveTpbSaveData();
+        }else {
+            player.sendMessage(ChatColor.RED+"回退地点记录失败");
+        }
+    }
+
     /**
      * 获取所有公共地点
      */
@@ -226,6 +243,23 @@ public class TpBookDataService {
     }
 
     /**
+     * 获取玩家的回退地点
+     * @param uuid
+     * @return
+     */
+    public static Telepoter getBeforeTeleporter(String uuid) {
+        Telepoter telepoter = new Telepoter();
+        telepoter.setType(4);
+        String path = "player." + uuid + ".before.tp";
+        if (tpbSaveData.contains(path)) {
+            telepoter.setName(tpbSaveData.getString(path + ".name",null));
+            telepoter.setLocation((Location)tpbSaveData.get(path + ".location",null));
+            return telepoter;
+        }
+        return null;
+    }
+
+    /**
      * 获取死亡地点
      * @param uuid
      * @param num
@@ -276,10 +310,17 @@ public class TpBookDataService {
         }
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.BOLD +""+ChatColor.RED + "传送点已删除"));
     }
+
+    /**
+     * 获取可用的位置序号,已int最大值为范围，循环使用
+     * @param path
+     * @return
+     */
     private static int getPNum(String path) {
         int pNum = tpbSaveData.getInt(path + ".num", 0);
         pNum = pNum == Integer.MAX_VALUE ? 0 : pNum;
         while (tpbSaveData.contains(path + ".tp." + pNum)) {
+            // 正常使用不会有死循环
             pNum++;
         }
         return pNum;

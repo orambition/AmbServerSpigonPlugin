@@ -1,7 +1,9 @@
 package amb.server.plugin.service.tpb;
 
+import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.core.PluginCore;
 import amb.server.plugin.model.Telepoter;
+import amb.server.plugin.service.tools.GUITools;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -89,6 +91,12 @@ public class TpBookService {
             // 传送开关
             setTeleporterSwitch(player);
             return;
+        } else if (type == beforeTpItem) {
+            // 前一地点
+            telepoter = getBeforeTeleporter(playerUUID);
+        } else if (type == privateFastTpItem) {
+            // 快速传送地点
+            telepoter = getPrivateFastTeleporter(playerUUID);
         } else if (type == addPrivateTpItem) {
             addPrivateTeleporter(player, null, num);
             //player.sendMessage(ChatColor.GOLD + "可以使用木牌创建传送点,\n第一行:[addtp]\n第二行:[传送点名称]\n即可添加当前地点为传送点");
@@ -112,9 +120,7 @@ public class TpBookService {
      * @param location
      */
     private static void tpPlayerToLocation(Player player, Location location) {
-        if (costPrice(player)) {
-            player.teleport(location);
-            needTpPet(player,location);
+        if (doTpPlayer(player, location)) {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
             sendMsg(player, "已传送到指定地点");
             //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至所选地点"));
@@ -128,9 +134,7 @@ public class TpBookService {
      * @param toPlayer
      */
     public static void tpPlayerToPlayer(Player player, Player toPlayer) {
-        if (costPrice(player)) {
-            player.teleport(toPlayer);
-            needTpPet(player,toPlayer.getLocation());
+        if (doTpPlayer(player, toPlayer.getLocation())) {
             toPlayer.sendMessage(ChatColor.GOLD + player.getDisplayName() + "传送至此!");
             toPlayer.playSound(toPlayer.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             sendMsg(toPlayer, player.getDisplayName() + "传送到此处!");
@@ -140,6 +144,21 @@ public class TpBookService {
         //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至"+toPlayer.getDisplayName()));
     }
 
+    private static boolean doTpPlayer(Player player, Location location){
+        if (costPrice(player)) {
+            Telepoter beforeTelepoter = new Telepoter(null, "前一地点", player.getLocation(), 4);
+            /*Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(
+                    PluginCore.getInstance(),
+                    () -> {},
+                    50L
+            );*/
+            //needTpPet(player, location);
+            player.teleport(location);
+            TpBookDataService.setBegoreTeleporter(player, beforeTelepoter);
+            return true;
+        }
+        return false;
+    }
     /**
      * 传输至玩家时发送请求
      * @param player
@@ -249,7 +268,7 @@ public class TpBookService {
             ItemMeta itemMeta = tpBook.getItemMeta();
             int page = itemMeta.getEnchantLevel(Enchantment.DAMAGE_ALL);
             if (page > price) {
-                itemMeta.setLore(Collections.singletonList(ChatColor.RESET + "页数:" + (page - price)));
+                itemMeta.setLore(TpBookItem.getBookItemLore(page - price));
                 itemMeta.addEnchant(Enchantment.DAMAGE_ALL, page - price, true);
                 tpBook.setItemMeta(itemMeta);
                 player.getInventory().setItemInMainHand(tpBook);
@@ -267,6 +286,7 @@ public class TpBookService {
 
     /**
      * 传输玩家宠物
+     * 需要先于玩家传送，以防止区块卸载
      * @param player
      * @param location
      */
@@ -274,13 +294,13 @@ public class TpBookService {
         if (!player.getWorld().equals(location.getWorld())){
             return;
         }
-
-        Collection<Entity> pets = player.getWorld().getEntitiesByClasses(Wolf.class, Cat.class);
+        Collection<Entity> pets = player.getWorld().getEntitiesByClasses(Tameable.class);
         pets.forEach(e->{
             if (((Tameable)e).isTamed()
                     && !((Sittable)e).isSitting()
                     && ((Tameable)e).getOwner().getUniqueId().equals(player.getUniqueId())){
                 e.teleport(location);
+                player.sendMessage("tp pet");
             }
         });
     }

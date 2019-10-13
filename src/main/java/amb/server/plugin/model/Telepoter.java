@@ -24,8 +24,12 @@ public class Telepoter {
     public Telepoter(String num, String name, Location location, int type) {
         this.num = num;
         this.name = name;
-        this.location = location;
+        this.location = location.clone();
         this.type = type;
+    }
+
+    public Telepoter() {
+
     }
 
     public Material getItemType(){
@@ -36,6 +40,8 @@ public class Telepoter {
                 return PluginConfig.privateTpItem;
             case 3:
                 return PluginConfig.deadTpItem;
+            case 4:
+                return PluginConfig.beforeTpItem;
                 default:
                     return PluginConfig.privateTpItem;
         }
@@ -44,7 +50,10 @@ public class Telepoter {
 
     public List<String> getItemLore(){
         List<String> lore = new ArrayList<String>();
-
+        lore.add(ChatColor.GOLD + "点击传送到此地点");
+        lore.add(ChatColor.RESET +""+ ChatColor.RED +"此操作将花费:");
+        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "- ["+tpBookCurrencyItemName + "x" +tpBookAddTpPrice+"] 或:");
+        lore.add(ChatColor.GREEN + "- ["+tpBookAddTpPrice+"页]传送书");
         switch (type){
             case 1:
                 lore.add(ChatColor.RESET + "创建者:"+this.getAuthor());
@@ -59,11 +68,11 @@ public class Telepoter {
             case 3:
                 lore.add(ChatColor.RESET + "时间:"+this.getCtimeShow());
                 break;
+            case 4:
+                lore.add(ChatColor.RESET + this.getWorld());
+                lore.add(ChatColor.RESET + this.getXYZ());
+                break;
         }
-        lore.add(ChatColor.GOLD + "点击传送到此地点");
-        lore.add(ChatColor.RESET +""+ ChatColor.RED +"此操作将花费:");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "- ["+tpBookCurrencyItemName + "x" +tpBookAddTpPrice+"] 或:");
-        lore.add(ChatColor.GREEN + "- ["+tpBookAddTpPrice+"页]传送书");
         return lore;
     }
 
@@ -92,6 +101,22 @@ public class Telepoter {
 
     public String getName() {
         return name;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public Location getLocation() {

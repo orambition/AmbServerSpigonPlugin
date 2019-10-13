@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -33,8 +34,13 @@ public class PlayerListener implements Listener {
             if (player.isSneaking()) {
                 // 前行(Shift+)时，进行快速传送
                 TpBookService.doShiftClickAction(player);
-            }else {
-                TpBookGUI.openBook(event.getPlayer());
+            } else {
+                Action action = event.getAction();
+                if (action.equals(Action.RIGHT_CLICK_BLOCK) || action.equals(Action.RIGHT_CLICK_AIR)){
+                    TpBookGUI.openBook(event.getPlayer());
+                } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)){
+                    TpBookGUI.openMenu(event.getPlayer());
+                }
             }
         }
     }

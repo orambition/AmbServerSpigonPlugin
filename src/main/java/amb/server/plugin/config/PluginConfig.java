@@ -27,6 +27,7 @@ public class PluginConfig {
     public static Material switchTpItem;
     public static Material switchOffTpItem;
     public static Material addPrivateTpItem;
+    public static Material beforeTpItem; // 传送书死亡机制的介绍
     public static Material tpBookCurrencyItem;// 传送消耗的通货
     public static String tpBookCurrencyItemName;// 传送消耗的通货
     public static int deadTpMax;
@@ -50,11 +51,12 @@ public class PluginConfig {
         pluginConfig.addDefault("tpb.book.menu.item.privatefasttp",Material.JUNGLE_SIGN.toString());
         pluginConfig.addDefault("tpb.book.menu.item.privatetp",Material.OAK_SIGN.toString());
         pluginConfig.addDefault("tpb.book.menu.item.deadtp",Material.TOTEM_OF_UNDYING.toString());
+        pluginConfig.addDefault("tpb.book.menu.item.beforetp",Material.SPECTRAL_ARROW.toString());
         pluginConfig.addDefault("tpb.book.menu.item.deadinfo",Material.GOLDEN_APPLE.toString());
         pluginConfig.addDefault("tpb.book.menu.item.switchtp",Material.LEVER.toString());
         pluginConfig.addDefault("tpb.book.menu.item.switchofftp",Material.BARRIER.toString());
         pluginConfig.addDefault("tpb.book.menu.item.addprivatetp",Material.BIRCH_SIGN.toString());
-        pluginConfig.addDefault("tpb.book.rulu.max.deadtp",6);
+        pluginConfig.addDefault("tpb.book.rulu.max.deadtp",5);
         pluginConfig.addDefault("tpb.book.rulu.max.privatetp",9);
         pluginConfig.addDefault("tpb.book.rulu.max.publictp",9);
         pluginConfig.addDefault("tpb.book.currency.item",Material.EMERALD.toString());
@@ -74,12 +76,13 @@ public class PluginConfig {
         privateTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.privatetp"));
         deadTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.deadinfo"));
         deadInfoItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.deadtp"));
+        beforeTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.beforetp"));
         switchTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.switchtp"));
         switchOffTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.switchofftp"));
         addPrivateTpItem = Material.getMaterial(pluginConfig.getString("tpb.book.menu.item.addprivatetp"));
         publicTpMax = pluginConfig.getInt("tpb.book.rulu.max.publictp",9);
         privateTpMax = pluginConfig.getInt("tpb.book.rulu.max.privatetp",9);
-        deadTpMax = pluginConfig.getInt("tpb.book.rulu.max.deadtp",6);
+        deadTpMax = pluginConfig.getInt("tpb.book.rulu.max.deadtp",5);
         tpBookCurrencyItem = Material.getMaterial(pluginConfig.getString("tpb.book.currency.item"));
         tpBookTpPrice = pluginConfig.getInt("tpb.book.currency.tpprice",2);
         tpBookAddTpPrice = pluginConfig.getInt("tpb.book.currency.addtpbase",2);
