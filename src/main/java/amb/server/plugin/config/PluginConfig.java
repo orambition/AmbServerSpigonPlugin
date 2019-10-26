@@ -4,16 +4,22 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class PluginConfig {
-
+    private static final Logger logger = PluginLogger.getLogger("Ambition");
     public static FileConfiguration pluginConfig;
-    public static FileConfiguration tpbSaveData;
+
     private static File tpbSaveDataFile;
+    public static FileConfiguration tpbSaveData;
+
+    private static File ambPermissionSaveDataFile;
+    public static FileConfiguration ambPermissionSaveData;
 
     public static GameRuleConfig gameRuleConfig;
     // 考虑过将不同功能的配置，分文件单独存储，但发现配置并不都也不复杂，目前放在一起也没问题
@@ -54,6 +60,7 @@ public class PluginConfig {
     public static void init(JavaPlugin plugin){
         getPluginConfig(plugin);
         getTpbSaveData(plugin);
+        initPermissionSaveDate(plugin);
     }
     private static void getPluginConfig(JavaPlugin plugin){
         pluginConfig = plugin.getConfig();
@@ -121,6 +128,7 @@ public class PluginConfig {
         raderBatteryPre = pluginConfig.getInt(RADERBATTERYPRE_PATH, 6);
         raderFoundRangeMax = pluginConfig.getInt(RADER_FOUND_RANGR_MAX_PATH, 4);
     }
+    /** 传送书 数据存储 **/
     private static void getTpbSaveData(JavaPlugin plugin){
         tpbSaveDataFile = new File(plugin.getDataFolder(),"tpbSaveData.yml");
         tpbSaveData = YamlConfiguration.loadConfiguration(tpbSaveDataFile);
@@ -130,7 +138,21 @@ public class PluginConfig {
         try {
             tpbSaveData.save(tpbSaveDataFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info("tpbSaveData ERROR, 传送书数据保存失败:"+e.getMessage());
+        }
+    }
+    /** 权限 数据存储
+     * @param plugin**/
+    private static void initPermissionSaveDate(JavaPlugin plugin){
+        ambPermissionSaveDataFile = new File(plugin.getDataFolder(), "permission.yml");
+        ambPermissionSaveData = YamlConfiguration.loadConfiguration(ambPermissionSaveDataFile);
+        savePermissionDate();
+    }
+    public static void savePermissionDate(){
+        try {
+            ambPermissionSaveData.save(ambPermissionSaveDataFile);
+        } catch (IOException e) {
+            logger.info("permissionSaveData ERROR, 权限数据保存失败:"+e.getMessage());
         }
     }
 }

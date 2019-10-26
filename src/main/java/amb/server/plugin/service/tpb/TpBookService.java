@@ -77,10 +77,10 @@ public class TpBookService {
                     player.sendMessage("无法感知到玩家的气息,此玩家没有开启传送");
                 } else if (1 == pSwitch) {
                     tpPlayerToPlayer(player, offlinePlayer.getPlayer());
-                } else if (2 == pSwitch) {
+                } /*else if (2 == pSwitch) {
                     requestTpToPlayer(offlinePlayer.getPlayer(), player);
                     player.sendMessage("已开始寻找玩家\n" + ChatColor.GOLD + "等待此玩家回应…");
-                }
+                }*/
             } else {
                 player.sendMessage("玩家已经下线了,无法传送");
             }
@@ -185,7 +185,7 @@ public class TpBookService {
         TextComponent msg1 = new TextComponent(ChatColor.GOLD + "点击此处[同意/YES]传送\n\n");
         TextComponent msg2 = new TextComponent(ChatColor.RED + "点击此处[拒绝/NO]传送\n");
         TextComponent msg3 = new TextComponent(ChatColor.GREEN + "10s后将默认拒绝传送…");
-
+        // 此命令已删除，此方法已作废，过度设计
         msg1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpbrequest agree " + reqPlayerName));
         msg2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpbrequest deny " + reqPlayerName));
         player.spigot().sendMessage(msg, msg1, msg2, msg3);
@@ -200,16 +200,16 @@ public class TpBookService {
         String path = "player." + player.getUniqueId().toString() + ".switch";
         // 0 禁用、1开启、2开启但需要审核
         if (tpbSaveData.contains(path)) {
-            int num = (tpbSaveData.getInt(path) + 1) % (player.hasPermission("op") ? 3 : 2);
+            int num = (tpbSaveData.getInt(path) + 1) % 2;
             tpbSaveData.set(path, num);
-            String str;
+            String str = "";
             if (num == 0) {
                 str = "已将开关设置为:" + ChatColor.RED + "禁止所有人传送到身边";
             } else if (num == 1) {
                 str = "已将开关设置为:" + ChatColor.GOLD + "允许所有人传送到身边";
-            } else {
+            } /*else {
                 str = "已将开关设置为:" + ChatColor.GOLD + "需要审批才能传送到身边";
-            }
+            }*/
             player.sendMessage(str);
         } else {
             tpbSaveData.set(path, 1);

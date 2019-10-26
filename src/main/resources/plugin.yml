@@ -1,14 +1,11 @@
 name: AmbServerPlugin
 author: Mr_Amb
-version: 1.0.5
+version: 1.0.6
 main: amb.server.plugin.core.PluginCore
 api-version: 1.14
 commands:
-  tpb:
-    description: tpbook command
-    permission: op
+  amb:
+    description: AmbServer private command
+    permission: amb
     permission-message: You not have permission to use this command.
-    usage: "/tpb <add> [name]"
-  tpbrequest:
-    description: tpbook request tp command
-    usage: "/tpbrequest <agree/deny> [name]"
+    usage: "/amb permission <-u|-p> <add|del|get> [player] [permission]"

@@ -1,6 +1,7 @@
 package amb.server.plugin.listener;
 
 import amb.server.plugin.config.PluginConfig;
+import amb.server.plugin.service.permission.PermissionConstant;
 import amb.server.plugin.service.radar.RadarItem;
 import amb.server.plugin.service.radar.RadarService;
 import amb.server.plugin.service.tpb.TpBookGUI;
@@ -39,6 +40,10 @@ public class PlayerListener implements Listener {
         if (item.getType().equals(PluginConfig.tpBookItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)) {
             /** 使用传送书 **/
             Player player = event.getPlayer();
+            if (!player.hasPermission(PermissionConstant.TPB)){
+                player.sendMessage("无权限使用!请联系Amb");
+                return;
+            }
             if (player.isSneaking()) {
                 // 前行(Shift+)时，进行快速传送
                 event.setCancelled(true);
@@ -56,6 +61,10 @@ public class PlayerListener implements Listener {
         } else if (item.getType().equals(PluginConfig.radarItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.radarName)){
             /** 使用万能雷达 **/
             Player player = event.getPlayer();
+            if (!player.hasPermission(PermissionConstant.RADER)){
+                player.sendMessage("无权限使用!请联系Amb");
+                return;
+            }
             Action action = event.getAction();
             if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)){
                 // 右键
@@ -77,6 +86,10 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
             if (event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.CHEST) {
                 Player player = (Player) event.getWhoClicked();
+                if (!player.hasPermission(PermissionConstant.TPB)){
+                    player.sendMessage("无权限使用!请联系Amb");
+                    return;
+                }
                 ItemStack clickedItem = event.getCurrentItem();
                 player.updateInventory();
                 player.closeInventory();
@@ -106,6 +119,9 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerDead(PlayerDeathEvent event) {
         Player player = event.getEntity();
+        if (!player.hasPermission(PermissionConstant.TPB)){
+            return;
+        }
         for (ItemStack item : event.getDrops()) {
             if (item.getType().equals(PluginConfig.tpBookItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)) {
                 event.getDrops().remove(item);
@@ -120,6 +136,9 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission(PermissionConstant.TPB)){
+            return;
+        }
         if (player.getScoreboardTags().contains("deadTp-haveBook")) {
             // 玩家死前有传送书
             player.removeScoreboardTag("deadTp-haveBook");

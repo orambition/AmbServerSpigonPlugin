@@ -86,6 +86,7 @@ public class RadarService {
                         // 注意此处有类型转换，实际绘制时为byte类型坐标
                         ItemStack map = MapUtil.buildMap(playerLocation, rX, rZ, realRange * chunkSize);
                         playerLocation.getWorld().dropItem(playerLocation, map);
+                        player.sendMessage(ChatColor.GREEN + "地图标记会在不久后消失,请尽快前往目标点!");
                     } else {
                         // 扫描结果为空
                         GUIUtils.sendMsg(player, "方圆百格内无搜索目标!");

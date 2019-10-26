@@ -1,6 +1,7 @@
 package amb.server.plugin.listener;
 
 import amb.server.plugin.core.PluginCore;
+import amb.server.plugin.service.permission.PermissionService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
@@ -20,6 +22,9 @@ public class ManageListener implements Listener {
     @EventHandler
     public void onPlayerJoinServer(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
+        // 处理权限
+        PermissionService.setupPermission(player);
+
         player.sendTitle(ChatColor.GOLD + "欢迎回到思服器", player.getDisplayName(), 10, 100, 20);
         // 异步解锁传送书合成表
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(
@@ -31,6 +36,12 @@ public class ManageListener implements Listener {
                 500L
         );
     }
+    @EventHandler
+    public void onPlayerQuitServer(PlayerQuitEvent event) {
+        // 处理权限
+        PermissionService.clearPermission(event.getPlayer());
+    }
+
     /*@EventHandler
     public void mapInit(MapInitializeEvent event){
         MapView mapView = event.getMap();
