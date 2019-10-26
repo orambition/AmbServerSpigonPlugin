@@ -1,21 +1,22 @@
 package amb.server.plugin.service.tpb;
 
-import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.core.PluginCore;
 import amb.server.plugin.model.Telepoter;
-import amb.server.plugin.service.tools.GUITools;
+import amb.server.plugin.service.utils.GUIUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Sittable;
+import org.bukkit.entity.Tameable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import static amb.server.plugin.config.PluginConfig.*;
 import static amb.server.plugin.service.tpb.TpBookDataService.*;
@@ -108,7 +109,7 @@ public class TpBookService {
             tpPlayerToLocation(player, telepoter.getLocation());
         } else {
             //player.sendMessage("传送点不存在了,无法传送");
-            sendMsg(player, "传送点不存在,无法传送");
+            GUIUtils.sendMsg(player, "传送点不存在,无法传送");
         }
 
     }
@@ -122,7 +123,7 @@ public class TpBookService {
     private static void tpPlayerToLocation(Player player, Location location) {
         if (doTpPlayer(player, location)) {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
-            sendMsg(player, "已传送到指定地点");
+            GUIUtils.sendMsg(player, "已传送到指定地点");
             //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至所选地点"));
         }
     }
@@ -137,9 +138,9 @@ public class TpBookService {
         if (doTpPlayer(player, toPlayer.getLocation())) {
             toPlayer.sendMessage(ChatColor.GOLD + player.getDisplayName() + "传送至此!");
             toPlayer.playSound(toPlayer.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-            sendMsg(toPlayer, player.getDisplayName() + "传送到此处!");
+            GUIUtils.sendMsg(toPlayer, player.getDisplayName() + "传送到此处!");
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
-            sendMsg(player, "传送至" + toPlayer.getDisplayName() + "身边");
+            GUIUtils.sendMsg(player, "传送至" + toPlayer.getDisplayName() + "身边");
         }
         //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至"+toPlayer.getDisplayName()));
     }

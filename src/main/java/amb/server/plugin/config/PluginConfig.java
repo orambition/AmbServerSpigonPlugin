@@ -14,7 +14,10 @@ public class PluginConfig {
     public static FileConfiguration pluginConfig;
     public static FileConfiguration tpbSaveData;
     private static File tpbSaveDataFile;
+
     public static GameRuleConfig gameRuleConfig;
+    // 考虑过将不同功能的配置，分文件单独存储，但发现配置并不都也不复杂，目前放在一起也没问题
+    /** 传送书相关配置 **/
     public static String tpBookTitle;
     public static String tpBookMenuTitle;
     public static int tpBookPageMax;// 默认可以消耗的点数，没有通货时将消耗此点数
@@ -35,14 +38,28 @@ public class PluginConfig {
     public static int publicTpMax;
     public static int tpBookTpPrice;// 传送消耗通货的数量
     public static int tpBookAddTpPrice;// 新增传送点消耗通货的基础数量，指数增长
+
+    /** 雷达相关配置 **/
+    public static Material radarItem;
+    private static final String RADARITEM_PATH = "radar.item";
+    public static String radarName;
+    private static final String RADARNAME_PATH = "radar.name";
+    public static int raderBatteryMax;// 雷达最多使用次数
+    private static final String RADERBATTERYMAX_PATH = "radar.rulu.max.usecount";
+    public static int raderBatteryPre;// 雷达每次消耗数量
+    private static final String RADERBATTERYPRE_PATH = "radar.rulu.userprice";
+    public static int raderFoundRangeMax;// 雷达最多搜索半径
+    private static final String RADER_FOUND_RANGR_MAX_PATH = "radar.rulu.max.found";
+
     public static void init(JavaPlugin plugin){
         getPluginConfig(plugin);
         getTpbSaveData(plugin);
     }
     private static void getPluginConfig(JavaPlugin plugin){
         pluginConfig = plugin.getConfig();
-        pluginConfig.addDefault("server.manage.gamerule.mobGriefing",false);
-        pluginConfig.addDefault("server.manage.gamerule.doFireTick",false);
+        pluginConfig.addDefault(GameRuleConfig.MOB_GRIEFING_PATH,false);
+        pluginConfig.addDefault(GameRuleConfig.DO_FIRE_TICK_PATH,false);
+        /** 传送书相关配置 **/
         pluginConfig.addDefault("tpb.book.item", Material.ENCHANTED_BOOK.toString());
         pluginConfig.addDefault("tpb.book.title", ChatColor.RESET + "" + ChatColor.BOLD + "传送书");
         pluginConfig.addDefault("tpb.book.canusecount", 10);
@@ -63,10 +80,19 @@ public class PluginConfig {
         pluginConfig.addDefault("tpb.book.currency.name","绿宝石");
         pluginConfig.addDefault("tpb.book.currency.tpprice",2);
         pluginConfig.addDefault("tpb.book.currency.addtpbase",2);
+
+        /** 雷达相关配置 **/
+        pluginConfig.addDefault(RADARITEM_PATH, Material.COMPASS.toString());
+        pluginConfig.addDefault(RADARNAME_PATH, "万能雷达");
+        pluginConfig.addDefault(RADERBATTERYMAX_PATH, 10);
+        pluginConfig.addDefault(RADERBATTERYPRE_PATH, 6);
+        pluginConfig.addDefault(RADER_FOUND_RANGR_MAX_PATH, 4);
+
         pluginConfig.options().copyDefaults(true);
         plugin.saveConfig();
-        gameRuleConfig = new GameRuleConfig(pluginConfig.getBoolean("server.manage.gamerule.mobGriefing",false),
-                pluginConfig.getBoolean("server.manage.gamerule.doFireTick",false));
+
+        gameRuleConfig = new GameRuleConfig(pluginConfig);
+        /** 传送书相关配置 **/
         tpBookTitle = pluginConfig.getString("tpb.book.title");
         tpBookMenuTitle = pluginConfig.getString("tpb.book.menu.title");
         tpBookPageMax = pluginConfig.getInt("tpb.book.canusecount",10);
@@ -87,6 +113,13 @@ public class PluginConfig {
         tpBookTpPrice = pluginConfig.getInt("tpb.book.currency.tpprice",2);
         tpBookAddTpPrice = pluginConfig.getInt("tpb.book.currency.addtpbase",2);
         tpBookCurrencyItemName = pluginConfig.getString("tpb.book.currency.name","绿宝石");
+
+        /** 雷达相关配置 **/
+        radarItem = Material.getMaterial(pluginConfig.getString(RADARITEM_PATH));
+        radarName = pluginConfig.getString(RADARNAME_PATH);
+        raderBatteryMax = pluginConfig.getInt(RADERBATTERYMAX_PATH, 10);
+        raderBatteryPre = pluginConfig.getInt(RADERBATTERYPRE_PATH, 6);
+        raderFoundRangeMax = pluginConfig.getInt(RADER_FOUND_RANGR_MAX_PATH, 4);
     }
     private static void getTpbSaveData(JavaPlugin plugin){
         tpbSaveDataFile = new File(plugin.getDataFolder(),"tpbSaveData.yml");

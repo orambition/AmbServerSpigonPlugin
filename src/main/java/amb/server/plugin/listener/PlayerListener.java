@@ -1,10 +1,14 @@
 package amb.server.plugin.listener;
 
 import amb.server.plugin.config.PluginConfig;
+import amb.server.plugin.service.radar.RadarItem;
+import amb.server.plugin.service.radar.RadarService;
 import amb.server.plugin.service.tpb.TpBookGUI;
 import amb.server.plugin.service.tpb.TpBookItem;
 import amb.server.plugin.service.tpb.TpBookService;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +16,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -21,26 +26,45 @@ import static amb.server.plugin.config.PluginConfig.tpBookTpPrice;
 import static amb.server.plugin.service.tpb.TpBookDataService.addPlayerDeadTeleporter;
 
 public class PlayerListener implements Listener {
-
+    /**
+     * 玩家使用物品
+     * @param event
+     */
     @EventHandler
-    public void onPlayerOpenBook(PlayerInteractEvent event) {
+    public void onPlayerUseItem(PlayerInteractEvent event) {
         if (!event.hasItem()) {
             return;
         }
         ItemStack item = event.getItem();
         if (item.getType().equals(PluginConfig.tpBookItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)) {
-            event.setCancelled(true);
+            /** 使用传送书 **/
             Player player = event.getPlayer();
             if (player.isSneaking()) {
                 // 前行(Shift+)时，进行快速传送
+                event.setCancelled(true);
                 TpBookService.doShiftClickAction(player);
             } else {
                 Action action = event.getAction();
-                if (action.equals(Action.RIGHT_CLICK_BLOCK) || action.equals(Action.RIGHT_CLICK_AIR)){
+                if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)){
+                    event.setCancelled(true);
                     TpBookGUI.openBook(event.getPlayer());
                 } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)){
+                    event.setCancelled(true);
                     TpBookGUI.openMenu(event.getPlayer());
                 }
+            }
+        } else if (item.getType().equals(PluginConfig.radarItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.radarName)){
+            /** 使用万能雷达 **/
+            Player player = event.getPlayer();
+            Action action = event.getAction();
+            if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)){
+                // 右键
+                event.setCancelled(true);
+                RadarService.user(player, event.getItem());
+            } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)){
+                // 左键
+                event.setCancelled(true);
+                RadarService.open(player, event.getItem());
             }
         }
     }
@@ -49,8 +73,9 @@ public class PlayerListener implements Listener {
     public void onPlayerClickMenu(InventoryClickEvent event) {
         if (event.getView().getTitle().equals(PluginConfig.tpBookMenuTitle)
                 && event.getCurrentItem() != null) {
+            // 点击传送书界面
             event.setCancelled(true);
-            if (event.getClickedInventory().getType() == InventoryType.CHEST) {
+            if (event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.CHEST) {
                 Player player = (Player) event.getWhoClicked();
                 ItemStack clickedItem = event.getCurrentItem();
                 player.updateInventory();
@@ -59,6 +84,22 @@ public class PlayerListener implements Listener {
                 boolean setFast = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isLeftClick();
                 TpBookService.doClickAction(player, clickedItem, delete, setFast);
             }
+        }
+        if (event.getView().getTitle().equals(PluginConfig.radarName)
+                && event.getClickedInventory() != null
+                && event.getClickedInventory().getType() == InventoryType.CHEST){
+            // 点击雷达界面
+            if (event.getSlot() != 11 && event.getSlot() != 15){
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event){
+        if (event.getView().getTitle().equals(PluginConfig.radarName)){
+            // 关闭雷达设置界面
+            RadarService.setTargetAndPower((Player) event.getPlayer(), event.getInventory().getItem(11), event.getInventory().getItem(15));
         }
     }
 

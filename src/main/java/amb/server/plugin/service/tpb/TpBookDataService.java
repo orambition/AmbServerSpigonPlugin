@@ -1,6 +1,7 @@
 package amb.server.plugin.service.tpb;
 
 import amb.server.plugin.model.Telepoter;
+import amb.server.plugin.service.utils.GUIUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
@@ -76,7 +77,7 @@ public class TpBookDataService {
         tpbSaveData.set(path + ".count", pCount + 1);
         saveTpbSaveData();
         //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BOLD + ""+ ChatColor.GREEN + "增加私人传送点成功"));
-        sendMsg(player,"增加私人传送点成功");
+        GUIUtils.sendMsg(player,"增加私人传送点成功");
     }
 
     /**
@@ -324,8 +325,5 @@ public class TpBookDataService {
             pNum++;
         }
         return pNum;
-    }
-    public static void sendMsg(Player player, String msg){
-        player.sendTitle("",ChatColor.GREEN + msg,10,30,10);
     }
 }

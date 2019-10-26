@@ -6,7 +6,7 @@
 
     <groupId>Ambition.Server</groupId>
     <artifactId>AmbServerSpigotPlugin</artifactId>
-    <version>1.0.4</version>
+    <version>1.14-1.0.5</version>
     <build>
         <plugins>
             <plugin>

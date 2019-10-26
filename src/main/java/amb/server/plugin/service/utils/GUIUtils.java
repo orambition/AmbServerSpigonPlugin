@@ -1,8 +1,9 @@
-package amb.server.plugin.service.tools;
+package amb.server.plugin.service.utils;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
-public class GUITools {
+public class GUIUtils {
     /**
      * 生成能量条形式的文本
      * [██████]
@@ -26,5 +27,9 @@ public class GUITools {
         }
         result.append(ChatColor.GREEN + "]");
         return result.toString();
+    }
+
+    public static void sendMsg(Player player, String msg){
+        player.sendTitle("",ChatColor.GREEN + msg,10,30,10);
     }
 }

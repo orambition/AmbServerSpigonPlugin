@@ -4,11 +4,16 @@ import amb.server.plugin.command.TpBookCommand;
 import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.listener.ManageListener;
 import amb.server.plugin.listener.PlayerListener;
+import amb.server.plugin.service.radar.RadarItem;
 import amb.server.plugin.service.tpb.TpBookItem;
+import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
+
 public class PluginCore extends JavaPlugin {
+    private final Logger logger = PluginLogger.getLogger("Ambition");
     private static PluginCore instance;
     public static PluginCore getInstance() {
         return instance;
@@ -16,10 +21,13 @@ public class PluginCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println("[AmbSP]-启动中……");
+        logger.info("[AmbSP]-启动中……");
         instance = this;
         PluginConfig.init(this);
+        // 注册传送书的合成表
         TpBookItem.addRecipe(this);
+        // 注册万能雷达合成表
+        RadarItem.addRecipe(this);
         PluginManager pluginManager = this.getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerListener(), this);
         pluginManager.registerEvents(new ManageListener(), this);
@@ -35,7 +43,7 @@ public class PluginCore extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        System.out.println("[AmbSP]-关闭中……");
+        logger.info("[AmbSP]-关闭中……");
     }
 
 }
