@@ -19,7 +19,6 @@ import java.util.List;
 import static amb.server.plugin.config.ConstantConfig.*;
 
 public class RadarService {
-    private static final int scanRange = 6; // 正方形扫描 的边长 6区块
     private static final int chunkSize = 16; // 区块大小
     private static final Vector DOWN_DIR = new Vector(0,0,chunkSize);
     private static final Vector LEFT_DIR = new Vector(-chunkSize,0,0);
@@ -86,17 +85,17 @@ public class RadarService {
                         // 注意此处有类型转换，实际绘制时为byte类型坐标
                         ItemStack map = MapUtil.buildMap(playerLocation, rX, rZ, realRange * chunkSize);
                         playerLocation.getWorld().dropItem(playerLocation, map);
-                        player.sendMessage(ChatColor.GREEN + "地图标记会在不久后消失,请尽快前往目标点!");
+                        player.sendMessage(ChatColor.GREEN + "发现"+rX.size()+"处目标\n"+ChatColor.RED+"地图标记会在不久后消失,请尽快前往目标点!");
                     } else {
                         // 扫描结果为空
                         GUIUtils.sendMsg(player, "方圆百格内无搜索目标!");
                     }
+                    // 3s 删除玩家冷却标记
+                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginCore.getInstance(),
+                            () -> player.removeScoreboardTag(PLAYER_RADAR_COOLING),
+                            300L
+                    );
         });
-        // 3s 删除玩家冷却标记
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginCore.getInstance(),
-                () -> player.removeScoreboardTag(PLAYER_RADAR_COOLING),
-                150L
-        );
     }
 
     /**
@@ -115,7 +114,7 @@ public class RadarService {
         int temp = tempLocation.getBlockX() % chunkSize;
         int centerOffsetX = -(temp < 0 ? chunkSize+temp : temp);
         temp = tempLocation.getBlockZ() % chunkSize;
-        int centerOffsetZ =  -(temp < 0 ? chunkSize+temp : temp);
+        int centerOffsetZ = -(temp < 0 ? chunkSize+temp : temp);
 
         boolean first = true;
         // 搜索边长 0 2 4 6 8 10
@@ -190,7 +189,7 @@ public class RadarService {
                     if (chunk.getBlockType(x, y, z).equals(targetMaterial)){
                         xs.add(offsetX + x);
                         zs.add(offsetZ + z);
-                        break;
+                        x++;z++;break;
                     }
                 }
             }

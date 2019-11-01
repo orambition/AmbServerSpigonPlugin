@@ -1,12 +1,9 @@
 package amb.server.plugin.service.utils.map;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.map.*;
 
-import java.net.ServerSocket;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AmbMapRenderer extends MapRenderer {
@@ -35,16 +32,18 @@ public class AmbMapRenderer extends MapRenderer {
     public void render(MapView map, MapCanvas canvas, Player player) {
         if (onlyOne){
             onlyOne = false;
-            //MapCursorCollection cursorCollection = canvas.getCursors();
+            MapCursorCollection cursorCollection = canvas.getCursors();
             for (int i = 0; i < x.size(); i++){
-                //MapCursor cursor = new MapCursor((byte) (2*x.get(i)), (byte) (2*y.get(i)), (byte) 0,MapCursor.Type.RED_X, true);
-                //cursorCollection.addCursor(cursor);
+                MapCursor cursor = new MapCursor((byte) (2*x.get(i)), (byte) (2*y.get(i)), (byte) 0,MapCursor.Type.RED_X, true);
+                cursorCollection.addCursor(cursor);
                 //canvas.setPixel((int)(64+x.get(i)),(int)(64+y.get(i)), (byte) 16);
-                canvas.drawText((int)(58+x.get(i)),(int)(61+y.get(i)), MinecraftFont.Font,  "¡ì"+i*4%53+";[+]");
+                //canvas.drawText((int)(58+x.get(i)),(int)(61+y.get(i)), MinecraftFont.Font,  "¡ì"+i*4%53+";[+]");
             }
             //(16 * 8- foundRange)/2 - location.getX()%16
-            byte minX = (byte) (64-foundRange/2 - location.getX()%16);
-            byte minY = (byte) (64-foundRange/2 - location.getZ()%16);
+            int temp = location.getBlockX()%16;
+            byte minX = (byte) (64-foundRange/2 - (temp < 0 ? 16+temp : temp));
+            temp = location.getBlockZ()%16;
+            byte minY = (byte) (64-foundRange/2 - (temp < 0 ? 16+temp : temp));
             byte maxX = (byte) (foundRange + minX);
             byte maxY = (byte) (foundRange + minY);
 
