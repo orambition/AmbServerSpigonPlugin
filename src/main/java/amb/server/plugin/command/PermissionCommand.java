@@ -28,6 +28,7 @@ public class PermissionCommand implements CommandExecutor {
                             uuid = UUID.fromString(strings[3]);
                         } catch (Exception e){
                             player.sendMessage("UUID"+strings[3]+"´íÎó");
+                            return false;
                         }
                     } else {
                         Player tPlayer = Bukkit.getServer().getPlayer(strings[3]);

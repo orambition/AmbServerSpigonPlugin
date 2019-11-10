@@ -56,10 +56,10 @@ public class TpBookDataService {
             player.sendMessage(ChatColor.GOLD + "消耗["+tpBookCurrencyItemName+"x"+price+"]");
         }else {
             player.sendMessage("背包中["+tpBookCurrencyItemName+"]不足"+price+"颗!");
-            int xp = player.getTotalExperience();
+            int xp = player.getLevel();
             if (price < 10 && xp >= price * 100){
-                player.setTotalExperience(xp-price*100);
-                player.sendMessage(ChatColor.GREEN+"已消耗"+price*100+"点[经验值],剩余:"+(xp-price*100));
+                player.setLevel(xp-price);
+                player.sendMessage(ChatColor.GREEN+"已消耗"+price+"点[经验值],剩余:"+(xp-price));
             }else {
                 player.sendMessage(ChatColor.RED+"无法添加新的传送点");
                 return;
