@@ -57,7 +57,7 @@ public class TpBookDataService {
         }else {
             player.sendMessage("背包中["+tpBookCurrencyItemName+"]不足"+price+"颗!");
             int xp = player.getLevel();
-            if (price < 10 && xp >= price * 100){
+            if (price < 10 && xp >= price){
                 player.setLevel(xp-price);
                 player.sendMessage(ChatColor.GREEN+"已消耗"+price+"点[经验值],剩余:"+(xp-price));
             }else {
