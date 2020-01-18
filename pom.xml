@@ -23,7 +23,7 @@
                 <configuration>
                     <!-- 指定打包的jar包输出路径-->
                     <outputDirectory>
-                        C:/Users/oramb/Downloads/SpigotServer/SpigotServer-1.14/plugins/
+                        C:/Users/oramb/Downloads/SpigotServer/SpigotServer-1.15/plugins/
                     </outputDirectory>
                 </configuration>
             </plugin>
