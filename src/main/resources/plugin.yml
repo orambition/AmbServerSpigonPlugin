@@ -2,7 +2,7 @@ name: AmbServerPlugin
 author: Mr_Amb
 version: 1.0.6
 main: amb.server.plugin.core.PluginCore
-api-version: 1.14
+api-version: 1.16.1
 commands:
   amb:
     description: AmbServer private command

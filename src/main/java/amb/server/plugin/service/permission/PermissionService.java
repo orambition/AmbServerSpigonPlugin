@@ -24,7 +24,7 @@ public class PermissionService {
     }
 
     public static void clearPermission(Player player){
-        if (player ==null){
+        if (player == null){
             return;
         }
         if (PluginCore.getPermissionMap().containsKey(player.getUniqueId())){

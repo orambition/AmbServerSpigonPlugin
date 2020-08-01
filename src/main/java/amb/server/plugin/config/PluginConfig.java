@@ -22,7 +22,7 @@ public class PluginConfig {
     public static FileConfiguration ambPermissionSaveData;
 
     public static GameRuleConfig gameRuleConfig;
-    // 考虑过将不同功能的配置，分文件单独存储，但发现配置并不都也不复杂，目前放在一起也没问题
+    // 考虑过将不同功能的配置，分文件单独存储，但发现配置并不多也不复杂，目前放在一起也没问题
     /** 传送书相关配置 **/
     public static String tpBookTitle;
     public static String tpBookMenuTitle;
