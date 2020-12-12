@@ -21,9 +21,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <!-- 指定打包的jar包输出路径-->
+                    <!-- 指定打包的jar包输出路径，注意不同操作系统的路径不同，路径不对打包会报 Error assembling JAR-->
                     <outputDirectory>
-                        /Users/zhangrenjing/Downloads/
+                        C:\Users\oramb\Downloads
                     </outputDirectory>
                 </configuration>
             </plugin>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.16.1-R0.1-SNAPSHOT</version>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!--<dependency>
