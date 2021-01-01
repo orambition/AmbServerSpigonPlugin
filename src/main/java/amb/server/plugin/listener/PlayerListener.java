@@ -2,14 +2,11 @@ package amb.server.plugin.listener;
 
 import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.service.permission.PermissionConstant;
-import amb.server.plugin.service.radar.RadarItem;
 import amb.server.plugin.service.radar.RadarService;
 import amb.server.plugin.service.tpb.TpBookGUI;
 import amb.server.plugin.service.tpb.TpBookItem;
 import amb.server.plugin.service.tpb.TpBookService;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,11 +19,15 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginLogger;
+
+import java.util.logging.Logger;
 
 import static amb.server.plugin.config.PluginConfig.tpBookTpPrice;
 import static amb.server.plugin.service.tpb.TpBookDataService.addPlayerDeadTeleporter;
 
 public class PlayerListener implements Listener {
+    private final Logger logger = PluginLogger.getLogger("Ambition");
     /**
      * 玩家使用物品
      * @param event
@@ -37,6 +38,7 @@ public class PlayerListener implements Listener {
             return;
         }
         ItemStack item = event.getItem();
+        //logger.info("2:"+item.getType()+"=="+PluginConfig.tpBookItem +"&&"+ item.getItemMeta().getDisplayName() +"=="+ PluginConfig.tpBookTitle);
         if (item.getType().equals(PluginConfig.tpBookItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)) {
             /** 使用传送书 **/
             Player player = event.getPlayer();

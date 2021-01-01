@@ -68,7 +68,7 @@ public class PluginConfig {
         pluginConfig.addDefault(GameRuleConfig.DO_FIRE_TICK_PATH,false);
         /** 传送书相关配置 **/
         pluginConfig.addDefault("tpb.book.item", Material.ENCHANTED_BOOK.toString());
-        pluginConfig.addDefault("tpb.book.title", ChatColor.RESET + "" + ChatColor.BOLD + "传送书");
+        pluginConfig.addDefault("tpb.book.title", ChatColor.BOLD + "传送书");
         pluginConfig.addDefault("tpb.book.canusecount", 10);
         pluginConfig.addDefault("tpb.book.menu.title",ChatColor.BOLD + "思服器的传送书");
         pluginConfig.addDefault("tpb.book.menu.item.publictp",Material.END_CRYSTAL.toString());
