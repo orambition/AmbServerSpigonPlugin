@@ -1,4 +1,4 @@
-＃AmbServerSpigotPlugin
+# AmbServerSpigotPlugin
 思服器私人插件
 
 1.添加的物品

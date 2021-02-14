@@ -54,7 +54,7 @@ public class TpBookDataService {
         if (player.getInventory().contains(tpBookCurrencyItem, price)){
             player.getInventory().removeItem(new ItemStack(tpBookCurrencyItem, price));
             player.sendMessage(ChatColor.GOLD + "消耗["+tpBookCurrencyItemName+"x"+price+"]");
-        }else {
+        } else {
             player.sendMessage("背包中["+tpBookCurrencyItemName+"]不足"+price+"颗!");
             int xp = player.getLevel();
             if (price < 10 && xp >= price){

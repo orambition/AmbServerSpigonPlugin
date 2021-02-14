@@ -1,9 +1,7 @@
 package amb.server.plugin.command;
 
 import amb.server.plugin.service.permission.PermissionService;
-import amb.server.plugin.service.tpb.TpBookService;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,8 +9,6 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.UUID;
-
-import static amb.server.plugin.service.tpb.TpBookDataService.addPublicTeleporter;
 
 public class PermissionCommand implements CommandExecutor {
 
@@ -47,7 +43,7 @@ public class PermissionCommand implements CommandExecutor {
                         player.sendMessage("删除权限成功!"+uuid+"-"+strings[4]);
                     } else if (strings[2].equals("get")){
                         List<String> pps =PermissionService.getPermission(uuid);
-                        player.sendMessage((pps == null || pps.size()==0)? "结果为空" : pps.toString());
+                        player.sendMessage((pps == null || pps.isEmpty())? "结果为空" : pps.toString());
                     }
                     return true;
                 }
