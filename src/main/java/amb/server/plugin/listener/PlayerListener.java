@@ -1,6 +1,7 @@
 package amb.server.plugin.listener;
 
 import amb.server.plugin.config.PluginConfig;
+import amb.server.plugin.service.blueprint.BlueprintService;
 import amb.server.plugin.service.permission.PermissionConstant;
 import amb.server.plugin.service.radar.RadarService;
 import amb.server.plugin.service.tpb.TpBookGUI;
@@ -28,55 +29,30 @@ import static amb.server.plugin.service.tpb.TpBookDataService.addPlayerDeadTelep
 
 public class PlayerListener implements Listener {
     private final Logger logger = PluginLogger.getLogger("Ambition");
+
     /**
      * 玩家使用物品
+     *
      * @param event
      */
     @EventHandler
-    public void onPlayerUseItem(PlayerInteractEvent event) {
+    public static void onPlayerUseItem(PlayerInteractEvent event) {
         if (!event.hasItem()) {
             return;
         }
         ItemStack item = event.getItem();
-        //logger.info("2:"+item.getType()+"=="+PluginConfig.tpBookItem +"&&"+ item.getItemMeta().getDisplayName() +"=="+ PluginConfig.tpBookTitle);
-        if (item.getType().equals(PluginConfig.tpBookItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)) {
+
+        if (item.getType().equals(PluginConfig.tpBookItem)
+                && item.getItemMeta().getDisplayName().equals(PluginConfig.tpBookTitle)) {
             /** 使用传送书 **/
-            Player player = event.getPlayer();
-            if (!player.hasPermission(PermissionConstant.TPB)){
-                player.sendMessage("无权限使用!请联系Amb");
-                return;
-            }
-            if (player.isSneaking()) {
-                // 前行(Shift+)时，进行快速传送
-                event.setCancelled(true);
-                TpBookService.doShiftClickAction(player);
-            } else {
-                Action action = event.getAction();
-                if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)){
-                    event.setCancelled(true);
-                    TpBookGUI.openBook(event.getPlayer());
-                } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)){
-                    event.setCancelled(true);
-                    TpBookGUI.openMenu(event.getPlayer());
-                }
-            }
-        } else if (item.getType().equals(PluginConfig.radarItem) && item.getItemMeta().getDisplayName().equals(PluginConfig.radarName)){
+            TpBookService.useTpBookEvent(event);
+        } else if (item.getType().equals(PluginConfig.radarItem)
+                && item.getItemMeta().getDisplayName().equals(PluginConfig.radarName)) {
             /** 使用万能雷达 **/
-            Player player = event.getPlayer();
-            if (!player.hasPermission(PermissionConstant.RADER)){
-                player.sendMessage("无权限使用!请联系Amb");
-                return;
-            }
-            Action action = event.getAction();
-            if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)){
-                // 右键
-                event.setCancelled(true);
-                RadarService.user(player, event.getItem());
-            } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)){
-                // 左键
-                event.setCancelled(true);
-                RadarService.open(player, event.getItem());
-            }
+            RadarService.useRadarEvent(event);
+        } else if (item.getType().equals(PluginConfig.blueprintSelectorItem)) {
+            /** 使用 建筑蓝图选择器 **/
+            BlueprintService.useSelectorEvent(event);
         }
     }
 
@@ -88,7 +64,7 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
             if (event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.CHEST) {
                 Player player = (Player) event.getWhoClicked();
-                if (!player.hasPermission(PermissionConstant.TPB)){
+                if (!player.hasPermission(PermissionConstant.TPB)) {
                     player.sendMessage("无权限使用!请联系Amb");
                     return;
                 }
@@ -102,26 +78,29 @@ public class PlayerListener implements Listener {
         }
         if (event.getView().getTitle().equals(PluginConfig.radarName)
                 && event.getClickedInventory() != null
-                && event.getClickedInventory().getType() == InventoryType.CHEST){
+                && event.getClickedInventory().getType() == InventoryType.CHEST) {
             // 点击雷达界面
-            if (event.getSlot() != 11 && event.getSlot() != 15){
+            if (event.getSlot() != 11 && event.getSlot() != 15) {
                 event.setCancelled(true);
             }
         }
     }
 
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event){
-        if (event.getView().getTitle().equals(PluginConfig.radarName)){
+    public void onInventoryClose(InventoryCloseEvent event) {
+        if (event.getView().getTitle().equals(PluginConfig.radarName)) {
             // 关闭雷达设置界面
             RadarService.setTargetAndPower((Player) event.getPlayer(), event.getInventory().getItem(11), event.getInventory().getItem(15));
+        } else if (event.getView().getTitle().equals(PluginConfig.blueprintBuildItemPutName)) {
+            // 关闭建筑蓝图 材料填充界面
+            BlueprintService.doPut((Player) event.getPlayer(), event.getInventory().getContents());
         }
     }
 
     @EventHandler
     public void onPlayerDead(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        if (!player.hasPermission(PermissionConstant.TPB)){
+        if (!player.hasPermission(PermissionConstant.TPB)) {
             return;
         }
         for (ItemStack item : event.getDrops()) {
@@ -138,7 +117,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (!player.hasPermission(PermissionConstant.TPB)){
+        if (!player.hasPermission(PermissionConstant.TPB)) {
             return;
         }
         if (player.getScoreboardTags().contains("deadTp-haveBook")) {

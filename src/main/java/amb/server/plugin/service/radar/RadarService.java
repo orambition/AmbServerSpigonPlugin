@@ -2,11 +2,14 @@ package amb.server.plugin.service.radar;
 
 import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.core.PluginCore;
+import amb.server.plugin.service.permission.PermissionConstant;
 import amb.server.plugin.service.utils.GUIUtils;
 import amb.server.plugin.service.utils.map.MapUtil;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,12 +30,34 @@ public class RadarService {
     private static Vector tempVector;
 
     /**
+     * 玩家使用雷达事件处理
+     * @param event
+     */
+    public static void useRadarEvent(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (!player.hasPermission(PermissionConstant.RADAR)){
+            player.sendMessage("无权限使用!请联系Amb");
+            return;
+        }
+        Action action = event.getAction();
+        if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)){
+            // 右键
+            event.setCancelled(true);
+            user(player, event.getItem());
+        } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)){
+            // 左键
+            event.setCancelled(true);
+            open(player, event.getItem());
+        }
+    }
+
+    /**
      * 右键使用雷达
      *
      * @param player
      * @param radar
      */
-    public static void user(Player player, ItemStack radar) {
+    private static void user(Player player, ItemStack radar) {
         Material targetMaterial = RadarItem.getRadarTarget(radar);
         if (targetMaterial == null) {
             return;
@@ -209,7 +234,7 @@ public class RadarService {
      * @param player
      * @param item
      */
-    public static void open(Player player, ItemStack item) {
+    private static void open(Player player, ItemStack item) {
         ItemMeta itemMeta = item.getItemMeta();
         int batter = itemMeta.getEnchantLevel(Enchantment.DAMAGE_ALL);
 

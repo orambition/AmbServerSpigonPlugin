@@ -57,6 +57,11 @@ public class PluginConfig {
     public static int raderFoundRangeMax;// 雷达最多搜索半径
     private static final String RADER_FOUND_RANGR_MAX_PATH = "radar.rulu.max.found";
 
+    /** 建筑蓝图配置 **/
+    public static Material blueprintSelectorItem;
+    public static int blueprintSelectorMaxRange;
+    public static String blueprintBuildItemPutName;
+
     public static void init(JavaPlugin plugin){
         getPluginConfig(plugin);
         getTpbSaveData(plugin);
@@ -66,7 +71,7 @@ public class PluginConfig {
         pluginConfig = plugin.getConfig();
         pluginConfig.addDefault(GameRuleConfig.MOB_GRIEFING_PATH,false);
         pluginConfig.addDefault(GameRuleConfig.DO_FIRE_TICK_PATH,false);
-        /** 传送书相关配置 **/
+        /** 传送书 默认配置 **/
         pluginConfig.addDefault("tpb.book.item", Material.ENCHANTED_BOOK.toString());
         pluginConfig.addDefault("tpb.book.title", ChatColor.BOLD + "传送书");
         pluginConfig.addDefault("tpb.book.canusecount", 10);
@@ -88,18 +93,23 @@ public class PluginConfig {
         pluginConfig.addDefault("tpb.book.currency.tpprice",2);
         pluginConfig.addDefault("tpb.book.currency.addtpbase",2);
 
-        /** 雷达相关配置 **/
+        /** 雷达 默认配置 **/
         pluginConfig.addDefault(RADARITEM_PATH, Material.COMPASS.toString());
         pluginConfig.addDefault(RADARNAME_PATH, "万能雷达");
         pluginConfig.addDefault(RADERBATTERYMAX_PATH, 10);
         pluginConfig.addDefault(RADERBATTERYPRE_PATH, 6);
         pluginConfig.addDefault(RADER_FOUND_RANGR_MAX_PATH, 4);
 
+        /** 建筑蓝图 默认配置 **/
+        pluginConfig.addDefault("blueprint.selector.item", Material.WOODEN_AXE.toString());
+        pluginConfig.addDefault("blueprint.selector.range.max", 64);
+        pluginConfig.addDefault("blueprint.build.put.view.name", "建筑蓝图-材料填充");
+
         pluginConfig.options().copyDefaults(true);
         plugin.saveConfig();
 
         gameRuleConfig = new GameRuleConfig(pluginConfig);
-        /** 传送书相关配置 **/
+        /** 传送书 配置获取 **/
         tpBookTitle = pluginConfig.getString("tpb.book.title");
         tpBookMenuTitle = pluginConfig.getString("tpb.book.menu.title");
         tpBookPageMax = pluginConfig.getInt("tpb.book.canusecount",10);
@@ -121,12 +131,17 @@ public class PluginConfig {
         tpBookAddTpPrice = pluginConfig.getInt("tpb.book.currency.addtpbase",2);
         tpBookCurrencyItemName = pluginConfig.getString("tpb.book.currency.name","绿宝石");
 
-        /** 雷达相关配置 **/
+        /** 雷达 配置获取 **/
         radarItem = Material.getMaterial(pluginConfig.getString(RADARITEM_PATH));
         radarName = pluginConfig.getString(RADARNAME_PATH);
         raderBatteryMax = pluginConfig.getInt(RADERBATTERYMAX_PATH, 10);
         raderBatteryPre = pluginConfig.getInt(RADERBATTERYPRE_PATH, 6);
         raderFoundRangeMax = pluginConfig.getInt(RADER_FOUND_RANGR_MAX_PATH, 4);
+
+        /** 建筑蓝图 配置获取 **/
+        blueprintSelectorItem = Material.getMaterial(pluginConfig.getString("blueprint.selector.item"));
+        blueprintSelectorMaxRange = pluginConfig.getInt("blueprint.selector.range.max", 64);
+        blueprintBuildItemPutName = pluginConfig.getString("blueprint.build.put.view.name");
     }
     /** 传送书 数据存储 **/
     private static void getTpbSaveData(JavaPlugin plugin){

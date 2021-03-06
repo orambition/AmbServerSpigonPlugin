@@ -2,6 +2,7 @@ package amb.server.plugin.service.tpb;
 
 import amb.server.plugin.core.PluginCore;
 import amb.server.plugin.model.Telepoter;
+import amb.server.plugin.service.permission.PermissionConstant;
 import amb.server.plugin.service.utils.GUIUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -12,6 +13,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sittable;
 import org.bukkit.entity.Tameable;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -23,10 +26,36 @@ import static amb.server.plugin.service.tpb.TpBookDataService.*;
 
 public class TpBookService {
     /**
+     * 玩家点击传送书事件
+     * @param event
+     */
+    public static void useTpBookEvent(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (!player.hasPermission(PermissionConstant.TPB)){
+            player.sendMessage("无权限使用!请联系Amb");
+            return;
+        }
+        if (player.isSneaking()) {
+            // 前行(Shift+)时，进行快速传送
+            event.setCancelled(true);
+            doShiftClickAction(player);
+        } else {
+            Action action = event.getAction();
+            if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)){
+                event.setCancelled(true);
+                TpBookGUI.openBook(event.getPlayer());
+            } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)){
+                event.setCancelled(true);
+                TpBookGUI.openMenu(event.getPlayer());
+            }
+        }
+    }
+
+    /**
      * 玩家shift点击传送书
      * @param player
      */
-    public static void doShiftClickAction(Player player){
+    private static void doShiftClickAction(Player player){
         Telepoter telepoter = getPrivateFastTeleporter(player.getUniqueId().toString());
         if (telepoter != null) {
             tpPlayerToLocation(player, telepoter.getLocation());
