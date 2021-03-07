@@ -61,6 +61,8 @@ public class PluginConfig {
     public static Material blueprintSelectorItem;
     public static int blueprintSelectorMaxRange;
     public static String blueprintBuildItemPutName;
+    public static String blueprintBreakItemPutName;
+    public static int blueprintBreakItemNeedExpCount;
 
     public static void init(JavaPlugin plugin){
         getPluginConfig(plugin);
@@ -104,6 +106,8 @@ public class PluginConfig {
         pluginConfig.addDefault("blueprint.selector.item", Material.WOODEN_AXE.toString());
         pluginConfig.addDefault("blueprint.selector.range.max", 64);
         pluginConfig.addDefault("blueprint.build.put.view.name", "建筑蓝图-材料填充");
+        pluginConfig.addDefault("blueprint.break.put.view.name", "建筑蓝图-放入工具");
+        pluginConfig.addDefault("blueprint.break.need.exp.count", 2);
 
         pluginConfig.options().copyDefaults(true);
         plugin.saveConfig();
@@ -142,6 +146,8 @@ public class PluginConfig {
         blueprintSelectorItem = Material.getMaterial(pluginConfig.getString("blueprint.selector.item"));
         blueprintSelectorMaxRange = pluginConfig.getInt("blueprint.selector.range.max", 64);
         blueprintBuildItemPutName = pluginConfig.getString("blueprint.build.put.view.name");
+        blueprintBreakItemPutName = pluginConfig.getString("blueprint.break.put.view.name");
+        blueprintBreakItemNeedExpCount = pluginConfig.getInt("blueprint.break.need.exp.count", 2);
     }
     /** 传送书 数据存储 **/
     private static void getTpbSaveData(JavaPlugin plugin){

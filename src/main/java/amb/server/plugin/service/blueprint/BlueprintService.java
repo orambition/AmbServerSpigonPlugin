@@ -3,23 +3,25 @@ package amb.server.plugin.service.blueprint;
 import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.core.PluginCore;
 import amb.server.plugin.service.permission.PermissionConstant;
-import amb.server.plugin.service.tpb.TpBookGUI;
+import amb.server.plugin.service.utils.GUIUtils;
+import amb.server.plugin.service.utils.ParticleUtils;
+import amb.server.plugin.service.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.inventory.meta.Damageable;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static amb.server.plugin.service.blueprint.BlueprintUtil.*;
+import static amb.server.plugin.service.utils.PlayerUtils.PLAYER_BLUEPRINT_SELECT;
 
 /**
  * @author zhangrenjing
@@ -36,42 +38,38 @@ public class BlueprintService {
      */
     public static void useSelectorEvent(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!player.hasPermission(PermissionConstant.BLUEPRINT)) {
-            player.sendMessage("[建筑蓝图]无权限使用!请联系Amb");
-            return;
-        }
-        // event.setCancelled(true);
-        // 前行(Shift+)
-        if (player.isSneaking()) {
-
-        } else {
+        if (player.hasPermission(PermissionConstant.BLUEPRINT)
+                && PlayerUtils.notMark(player, PLAYER_BLUEPRINT_SELECT)) {
+            event.setCancelled(true);
             Action action = event.getAction();
             // (右击快 && 物体不是可交互的) || 右键空气
             if (action.equals(Action.LEFT_CLICK_BLOCK)) {
                 Location location1 = BlueprintUtil.setSelectedLocation(player, SELECT_LOCATION_1, event.getClickedBlock().getLocation());
                 Location location2 = BlueprintUtil.getSelectedLocation(player, SELECT_LOCATION_2);
                 if (location2 != null) {
-                    preprocessed(player, location1, location2);
+                    // 前行(Shift+) 为破坏操作
+                    preprocessed(player, location1, location2, player.isSneaking());
                 }
             } else if (action.equals(Action.RIGHT_CLICK_BLOCK)) {
                 Location location2 = BlueprintUtil.setSelectedLocation(player, SELECT_LOCATION_2, event.getClickedBlock().getLocation());
                 Location location1 = BlueprintUtil.getSelectedLocation(player, SELECT_LOCATION_1);
                 if (location1 != null) {
-                    preprocessed(player, location1, location2);
+                    preprocessed(player, location1, location2, player.isSneaking());
                 }
             }
         }
     }
 
     /**
-     * 填充预处理，仅做校验，打开材料填充界面，
-     * 监听页面关闭事件，开始填充
+     * 填充预处理，仅做校验，打开材料/工具填充界面，
+     * 监听页面关闭事件，开始填充/破坏
      *
      * @param player
      * @param pos1
      * @param pos2
+     * @param isBreak 是否为破坏操作
      */
-    private static void preprocessed(Player player, Location pos1, Location pos2) {
+    private static void preprocessed(Player player, Location pos1, Location pos2, boolean isBreak) {
         if (pos1 == null || pos2 == null || pos1.getWorld() == null || !Objects.equals(pos1.getWorld(), pos2.getWorld())) {
             return;
         }
@@ -85,26 +83,43 @@ public class BlueprintService {
             player.sendMessage("[建筑蓝图]选择范围过大，请重新选择！");
             return;
         }
-        Inventory inventory = Bukkit.createInventory(null, 54, PluginConfig.blueprintBuildItemPutName);
-        player.openInventory(inventory);
+        // 加串行锁，同时只能执行一个任务
+        PlayerUtils.mark(player, PLAYER_BLUEPRINT_SELECT);
+        // 绘制粒子
+        ParticleUtils.drawLineTimer(pos1, pos2);
+
+        if (isBreak) {
+            // 破坏，这个方法是当前线程延时执行，不是真正的"异步"的，背包无法在异步线程中打开
+            Bukkit.getServer().getScheduler().runTaskLater(PluginCore.getInstance(), () -> {
+                Inventory inventory = Bukkit.createInventory(null, 54, PluginConfig.blueprintBreakItemPutName);
+                player.openInventory(inventory);
+            }, 40);
+            GUIUtils.sendMsg(player, "区域选择成功，请放入工具");
+        } else {
+            // 建造
+            Bukkit.getServer().getScheduler().runTaskLater(PluginCore.getInstance(), () -> {
+                Inventory inventory = Bukkit.createInventory(null, 54, PluginConfig.blueprintBuildItemPutName);
+                player.openInventory(inventory);
+            }, 40);
+            GUIUtils.sendMsg(player, "区域选择成功，请放入建造材料");
+        }
     }
 
-    public static void doPut(Player player, ItemStack[] materialsContents) {
-        if (materialsContents == null || materialsContents.length == 0) {
+    public static void doBlueprint(Player player, ItemStack[] itemContents, boolean isBreak) {
+        PlayerUtils.unMark(player, PLAYER_BLUEPRINT_SELECT);
+        if (itemContents == null || itemContents.length == 0) {
             return;
         }
         List<ItemStack> validItem = new ArrayList<>();
-        for (ItemStack itemStack : materialsContents) {
+        for (ItemStack itemStack : itemContents) {
             if (itemStack == null) continue;
-            if (itemStack.getType().isBlock() && itemStack.getType().isSolid() && itemStack.getAmount() > 0) {
+            if (isBreak ? BlueprintUtil.isValueBreakItem(itemStack) : BlueprintUtil.isValueBuildItem(itemStack)) {
                 validItem.add(itemStack);
             } else {
                 player.getWorld().dropItem(player.getLocation(), itemStack);
             }
         }
-        if (validItem.size() == 0) {
-            return;
-        }
+        if (validItem.isEmpty()) return;
 
         Location pos1 = BlueprintUtil.getSelectedLocation(player, SELECT_LOCATION_1);
         Location pos2 = BlueprintUtil.getSelectedLocation(player, SELECT_LOCATION_2);
@@ -113,45 +128,100 @@ public class BlueprintService {
             return;
         }
         BlueprintUtil.delSelected(player);
-
-        int p1x = pos1.getBlockX();
-        int p1y = pos1.getBlockY();
-        int p1z = pos1.getBlockZ();
-
-        int p2x = pos2.getBlockX();
-        int p2y = pos2.getBlockY();
-        int p2z = pos2.getBlockZ();
-
-        int xMin, yMin, zMin, xMax, yMax, zMax;
-        if (p1x < p2x) {
-            xMin = p1x;
-            xMax = p2x;
-        } else {
-            xMin = p2x;
-            xMax = p1x;
-        }
-        if (p1y < p2y) {
-            yMin = p1y;
-            yMax = p2y;
-        } else {
-            yMin = p2y;
-            yMax = p1y;
-        }
-        if (p1z < p2z) {
-            zMin = p1z;
-            zMax = p2z;
-        } else {
-            zMin = p2z;
-            zMax = p1z;
-        }
-
+        int[] xyzRange = BlueprintUtil.getRange(pos1, pos2);
         World world = pos1.getWorld();
-        Iterator<ItemStack> itemStackIterator = validItem.iterator();
+
+        if (isBreak) {
+            // 破坏
+            asyncBreak(player, validItem, world, xyzRange);
+        } else {
+            // 填充
+            asyncBuild(player, validItem, world, xyzRange);
+        }
+
+    }
+
+    private static void asyncBreak(Player player, List<ItemStack> validItem, World world, int[] xyzRange) {
         Bukkit.getServer().getScheduler().runTask(PluginCore.getInstance(), () -> {
+            Map<String, List<ItemStack>> validItemLaitMap = BlueprintUtil.convertItemList2Map(validItem);
+
+            for (int x = xyzRange[0]; x <= xyzRange[1]; x++) {
+                for (int y = xyzRange[2]; y <= xyzRange[3]; y++) {
+                    for (int z = xyzRange[4]; z <= xyzRange[5]; z++) {
+                        Block block = world.getBlockAt(x, y, z);
+                        if (block.isEmpty() || block.isPassable() || block.getType() == Material.BEDROCK) {
+                            continue;
+                        }
+                        if (PlayerUtils.getExp(player) < PluginConfig.blueprintBreakItemNeedExpCount) {
+                            player.sendMessage("[建筑蓝图]没有经验，不能使用蓝图挖掘");
+                            backItem2Player(player, validItem);
+                            return;
+                        }
+                        ItemStack index = null;
+                        if (block.getType() == Material.GRASS_BLOCK
+                                || block.getType() == Material.DIRT
+                                || block.getType() == Material.COARSE_DIRT
+                                || block.getType() == Material.PODZOL
+                                || block.getType() == Material.SAND
+                                || block.getType() == Material.GRAVEL) {
+                            // 锹
+                            if (validItemLaitMap.containsKey(_SHOVEL)) {
+                                Optional<ItemStack> shovel = validItemLaitMap.get(_SHOVEL).stream().filter(i -> ((Damageable) i.getItemMeta()).getDamage() > 0).findFirst();
+                                if (shovel.isPresent()) {
+                                    index = shovel.get();
+                                }
+                            }
+                        } else if (block.getType().name().contains("_WOOD")
+                                || block.getType().name().contains("_LOG")
+                                || block.getType().name().contains("_PLANKS")) {
+                            // 斧
+                            if (validItemLaitMap.containsKey(_AXE)) {
+                                Optional<ItemStack> shovel = validItemLaitMap.get(_AXE).stream().filter(i -> ((Damageable) i.getItemMeta()).getDamage() > 0).findFirst();
+                                if (shovel.isPresent()) {
+                                    index = shovel.get();
+                                }
+                            }
+                        } else {
+                            // 镐
+                            if (validItemLaitMap.containsKey(_PICKAXE)) {
+                                validItemLaitMap.get(_PICKAXE).stream().forEach(i -> player.sendMessage("耐久=" + ((Damageable) i.getItemMeta()).getDamage()));
+                                Optional<ItemStack> shovel = validItemLaitMap.get(_PICKAXE).stream().filter(i -> ((Damageable) i.getItemMeta()).getDamage() > 0).findFirst();
+                                if (shovel.isPresent()) {
+                                    index = shovel.get();
+                                } else {
+                                    player.sendMessage("没有镐头");
+                                }
+                            }
+                        }
+                        if (index != null) {
+                            ItemStack finalIndex = index;
+                            Bukkit.getServer().getScheduler().runTaskLater(PluginCore.getInstance(), () -> {
+                                if (block.breakNaturally(finalIndex)) {
+                                    ((Damageable) finalIndex.getItemMeta()).setDamage(((Damageable) finalIndex.getItemMeta()).getDamage() - 1);
+                                    player.giveExp(-PluginConfig.blueprintBreakItemNeedExpCount);
+                                } else {
+                                    player.sendMessage("[建筑蓝图]没挖动");
+                                }
+                            }, (x + y + z) * 20);
+
+                        } else {
+                            player.sendMessage("[建筑蓝图]挖掘" + block.getType().name() + "缺少必要的工具");
+                        }
+                    }
+                }
+            }
+            backItem2Player(player, validItem);
+        });
+    }
+
+    private static void asyncBuild(Player player, List<ItemStack> validItem, World world, int[] xyzRange) {
+        // 不能异步操作块
+        Bukkit.getServer().getScheduler().runTask(PluginCore.getInstance(), () -> {
+            Iterator<ItemStack> itemStackIterator = validItem.iterator();
             ItemStack index = itemStackIterator.next();
-            for (int x = xMin; x <= xMax; x++) {
-                for (int y = yMin; y <= yMax; y++) {
-                    for (int z = zMin; z <= zMax; z++) {
+            for (int x = xyzRange[0]; x <= xyzRange[1]; x++) {
+                for (int y = xyzRange[2]; y <= xyzRange[3]; y++) {
+                    for (int z = xyzRange[4]; z <= xyzRange[5]; z++) {
                         Block block = world.getBlockAt(x, y, z);
                         if (block.isEmpty() || block.isPassable()) {
                             while (index.getAmount() <= 0 && itemStackIterator.hasNext()) {
@@ -168,11 +238,15 @@ public class BlueprintService {
                     }
                 }
             }
-            validItem.stream().filter(i -> i.getAmount() > 0)
-                    .forEach(i -> {
-                        player.getWorld().dropItem(player.getLocation(), i);
-                        player.sendMessage("[建筑蓝图]材料剩余：" + i.getItemMeta().getDisplayName() + "x" + i.getAmount());
-                    });
+            backItem2Player(player, validItem);
         });
+    }
+
+    private static void backItem2Player(Player player, List<ItemStack> validItem) {
+        validItem.stream().filter(i -> ((Damageable) i.getItemMeta()).getDamage() > 0)
+                .forEach(i -> {
+                    player.getWorld().dropItem(player.getLocation(), i);
+                    player.sendMessage("[建筑蓝图] 物品归还：" + i.getType().name() + "x" + i.getAmount());
+                });
     }
 }

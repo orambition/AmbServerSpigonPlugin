@@ -4,6 +4,7 @@ import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.core.PluginCore;
 import amb.server.plugin.service.permission.PermissionConstant;
 import amb.server.plugin.service.utils.GUIUtils;
+import amb.server.plugin.service.utils.PlayerUtils;
 import amb.server.plugin.service.utils.map.MapUtil;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static amb.server.plugin.config.ConstantConfig.*;
+import static amb.server.plugin.service.utils.PlayerUtils.PLAYER_RADAR_COOLING;
 
 public class RadarService {
     private static final int chunkSize = 16; // 区块大小
@@ -31,20 +32,21 @@ public class RadarService {
 
     /**
      * 玩家使用雷达事件处理
+     *
      * @param event
      */
     public static void useRadarEvent(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!player.hasPermission(PermissionConstant.RADAR)){
+        if (!player.hasPermission(PermissionConstant.RADAR)) {
             player.sendMessage("无权限使用!请联系Amb");
             return;
         }
         Action action = event.getAction();
-        if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)){
+        if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)) {
             // 右键
             event.setCancelled(true);
             user(player, event.getItem());
-        } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)){
+        } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)) {
             // 左键
             event.setCancelled(true);
             open(player, event.getItem());
@@ -58,6 +60,8 @@ public class RadarService {
      * @param radar
      */
     private static void user(Player player, ItemStack radar) {
+        if (PlayerUtils.hasMark(player, PLAYER_RADAR_COOLING)) return;
+
         Material targetMaterial = RadarItem.getRadarTarget(radar);
         if (targetMaterial == null) {
             return;
@@ -75,7 +79,7 @@ public class RadarService {
             player.getInventory().setItemInMainHand(radar);
             player.sendMessage("消耗[" + PluginConfig.raderBatteryPre + "格]能量");
             // 添加冷却标记
-            player.addScoreboardTag(PLAYER_RADAR_COOLING);
+            PlayerUtils.mark(player, PLAYER_RADAR_COOLING);
             doAsynScan(player, material);
         } else {
             GUIUtils.sendMsg(player, "能量不足" + PluginConfig.raderBatteryPre + "颗！请按[左键]放入绿宝石");
@@ -119,9 +123,7 @@ public class RadarService {
             }
             // 3s 删除玩家冷却标记
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginCore.getInstance(),
-                    () -> player.removeScoreboardTag(PLAYER_RADAR_COOLING),
-                    300L
-            );
+                    () -> PlayerUtils.unMark(player, PLAYER_RADAR_COOLING), 300L);
         });
     }
 

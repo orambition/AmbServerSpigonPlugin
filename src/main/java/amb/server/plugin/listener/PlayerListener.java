@@ -2,12 +2,14 @@ package amb.server.plugin.listener;
 
 import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.service.blueprint.BlueprintService;
+import amb.server.plugin.service.blueprint.BlueprintUtil;
 import amb.server.plugin.service.permission.PermissionConstant;
 import amb.server.plugin.service.radar.RadarService;
 import amb.server.plugin.service.tpb.TpBookGUI;
 import amb.server.plugin.service.tpb.TpBookItem;
 import amb.server.plugin.service.tpb.TpBookService;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -61,26 +63,26 @@ public class PlayerListener implements Listener {
         if (event.getView().getTitle().equals(PluginConfig.tpBookMenuTitle)
                 && event.getCurrentItem() != null) {
             // 点击传送书界面
-            event.setCancelled(true);
-            if (event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.CHEST) {
-                Player player = (Player) event.getWhoClicked();
-                if (!player.hasPermission(PermissionConstant.TPB)) {
-                    player.sendMessage("无权限使用!请联系Amb");
-                    return;
-                }
-                ItemStack clickedItem = event.getCurrentItem();
-                player.updateInventory();
-                player.closeInventory();
-                boolean delete = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isRightClick();
-                boolean setFast = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isLeftClick();
-                TpBookService.doClickAction(player, clickedItem, delete, setFast);
-            }
-        }
-        if (event.getView().getTitle().equals(PluginConfig.radarName)
+            TpBookService.clickViewMenuEvent(event);
+        } else if (event.getView().getTitle().equals(PluginConfig.radarName)
                 && event.getClickedInventory() != null
                 && event.getClickedInventory().getType() == InventoryType.CHEST) {
             // 点击雷达界面
             if (event.getSlot() != 11 && event.getSlot() != 15) {
+                event.setCancelled(true);
+            }
+        } else if (event.getView().getTitle().equals(PluginConfig.blueprintBuildItemPutName)) {
+            // 建筑蓝图 材料填充页面，限制放入的材料
+            ItemStack currentItem = event.getCursor() != null && event.getCursor().getType() != Material.AIR ?
+                    event.getCursor() : event.getCurrentItem();
+            if (!BlueprintUtil.isValueBuildItem(currentItem)) {
+                event.setCancelled(true);
+            }
+        } else if (event.getView().getTitle().equals(PluginConfig.blueprintBreakItemPutName)) {
+            // 建筑蓝图 工具填充页面，限制放入的工具
+            ItemStack currentItem = event.getCursor() != null && event.getCursor().getType() != Material.AIR ?
+                    event.getCursor() : event.getCurrentItem();
+            if (!BlueprintUtil.isValueBreakItem(currentItem)) {
                 event.setCancelled(true);
             }
         }
@@ -93,7 +95,10 @@ public class PlayerListener implements Listener {
             RadarService.setTargetAndPower((Player) event.getPlayer(), event.getInventory().getItem(11), event.getInventory().getItem(15));
         } else if (event.getView().getTitle().equals(PluginConfig.blueprintBuildItemPutName)) {
             // 关闭建筑蓝图 材料填充界面
-            BlueprintService.doPut((Player) event.getPlayer(), event.getInventory().getContents());
+            BlueprintService.doBlueprint((Player) event.getPlayer(), event.getInventory().getContents(), false);
+        } else if (event.getView().getTitle().equals(PluginConfig.blueprintBreakItemPutName)) {
+            // 关闭建筑蓝图 工具选择界面
+            BlueprintService.doBlueprint((Player) event.getPlayer(), event.getInventory().getContents(), true);
         }
     }
 

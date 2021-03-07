@@ -14,6 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Sittable;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -50,7 +53,22 @@ public class TpBookService {
             }
         }
     }
-
+    public static void clickViewMenuEvent(InventoryClickEvent event) {
+        event.setCancelled(true);
+        if (event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.CHEST) {
+            Player player = (Player) event.getWhoClicked();
+            if (!player.hasPermission(PermissionConstant.TPB)) {
+                player.sendMessage("无权限使用!请联系Amb");
+                return;
+            }
+            ItemStack clickedItem = event.getCurrentItem();
+            player.updateInventory();
+            player.closeInventory();
+            boolean delete = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isRightClick();
+            boolean setFast = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isLeftClick();
+            doClickAction(player, clickedItem, delete, setFast);
+        }
+    }
     /**
      * 玩家shift点击传送书
      * @param player
@@ -69,7 +87,7 @@ public class TpBookService {
      * @param player
      * @param clickedItem
      */
-    public static void doClickAction(Player player, ItemStack clickedItem, boolean delete, boolean setFast) {
+    private static void doClickAction(Player player, ItemStack clickedItem, boolean delete, boolean setFast) {
         Material type = clickedItem.getType();
         String playerUUID = player.getUniqueId().toString();
         // 自定义变量，用于传递地点编号
