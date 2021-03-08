@@ -2,6 +2,7 @@ package amb.server.plugin.service.tpb;
 
 import amb.server.plugin.model.Telepoter;
 import amb.server.plugin.service.utils.GUIUtils;
+import amb.server.plugin.service.utils.PlayerUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
@@ -51,25 +52,24 @@ public class TpBookDataService {
             player.sendMessage("传送点数量已达到上限\n请删除后再添加");
             return;
         }
-        if (player.getInventory().contains(tpBookCurrencyItem, price)){
+        if (player.getInventory().contains(tpBookCurrencyItem, price)) {
             player.getInventory().removeItem(new ItemStack(tpBookCurrencyItem, price));
-            player.sendMessage(ChatColor.GOLD + "消耗["+tpBookCurrencyItemName+"x"+price+"]");
+            player.sendMessage(ChatColor.GOLD + "消耗[" + tpBookCurrencyItemName + "x" + price + "]");
         } else {
-            player.sendMessage("背包中["+tpBookCurrencyItemName+"]不足"+price+"颗!");
-            int xp = player.getLevel();
-            if (price < 10 && xp >= price){
-                player.setLevel(xp-price);
-                player.sendMessage(ChatColor.GREEN+"已消耗"+price+"点[经验值],剩余:"+(xp-price));
-            }else {
-                player.sendMessage(ChatColor.RED+"无法添加新的传送点");
+            player.sendMessage("背包中[" + tpBookCurrencyItemName + "]不足" + price + "颗!");
+            int needXp = (int) (price * PlayerUtils.getExp(3));
+            if (needXp <= PlayerUtils.getExp(player)) {
+                player.giveExp(-needXp);
+                player.sendMessage(ChatColor.GREEN + "已消耗" + needXp + "点[经验值]");
+            } else {
+                player.sendMessage(ChatColor.RED + "无法添加新的传送点");
                 return;
             }
         }
 
-
         int pNum = getPNum(path);
-        if (null == name){
-            name = "私人传送点"+(pNum+1);
+        if (null == name) {
+            name = "私人传送点" + (pNum + 1);
         }
         tpbSaveData.set(path + ".tp." + pNum + ".name", name);
         tpbSaveData.set(path + ".tp." + pNum + ".location", player.getLocation());
@@ -77,7 +77,7 @@ public class TpBookDataService {
         tpbSaveData.set(path + ".count", pCount + 1);
         saveTpbSaveData();
         //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BOLD + ""+ ChatColor.GREEN + "增加私人传送点成功"));
-        GUIUtils.sendMsg(player,"增加私人传送点成功");
+        GUIUtils.sendMsg(player, "增加私人传送点成功");
     }
 
     /**
@@ -97,45 +97,47 @@ public class TpBookDataService {
         tpbSaveData.set(path + ".count", pCount + 1);
 
         int pNum = getPNum(path);
-        tpbSaveData.set(path + ".tp." + pNum + ".name", "死亡地点" + (pNum+1));
+        tpbSaveData.set(path + ".tp." + pNum + ".name", "死亡地点" + (pNum + 1));
         tpbSaveData.set(path + ".tp." + pNum + ".location", player.getLocation());
         tpbSaveData.set(path + ".tp." + pNum + ".ctime", System.currentTimeMillis());
         tpbSaveData.set(path + ".num", pNum + 1);
 
         saveTpbSaveData();
-        player.sendMessage(ChatColor.GREEN+"死亡地点已记录");
+        player.sendMessage(ChatColor.GREEN + "死亡地点已记录");
     }
 
     /**
      * 存储快速传送点
+     *
      * @param player
      * @param telepoter
      */
-    public static void setFastTeleporter(Player player,Telepoter telepoter){
-        if (null != telepoter && StringUtils.isNotBlank(telepoter.getName()) && null != telepoter.getLocation()){
+    public static void setFastTeleporter(Player player, Telepoter telepoter) {
+        if (null != telepoter && StringUtils.isNotBlank(telepoter.getName()) && null != telepoter.getLocation()) {
             String path = "player." + player.getUniqueId().toString() + ".fast.tp";
             tpbSaveData.set(path + ".name", telepoter.getName());
             tpbSaveData.set(path + ".location", telepoter.getLocation());
             saveTpbSaveData();
-            player.sendMessage(ChatColor.GREEN+"快速传送点已更新");
-        }else {
-            player.sendMessage(ChatColor.RED+"快速传送点设置失败");
+            player.sendMessage(ChatColor.GREEN + "快速传送点已更新");
+        } else {
+            player.sendMessage(ChatColor.RED + "快速传送点设置失败");
         }
     }
 
     /**
      * 存储前一地点
+     *
      * @param player
      * @param telepoter
      */
-    public static void setBegoreTeleporter(Player player,Telepoter telepoter){
-        if (null != telepoter && StringUtils.isNotBlank(telepoter.getName()) && null != telepoter.getLocation()){
+    public static void setBegoreTeleporter(Player player, Telepoter telepoter) {
+        if (null != telepoter && StringUtils.isNotBlank(telepoter.getName()) && null != telepoter.getLocation()) {
             String path = "player." + player.getUniqueId().toString() + ".before.tp";
             tpbSaveData.set(path + ".name", telepoter.getName());
             tpbSaveData.set(path + ".location", telepoter.getLocation());
             saveTpbSaveData();
-        }else {
-            player.sendMessage(ChatColor.RED+"回退地点记录失败");
+        } else {
+            player.sendMessage(ChatColor.RED + "回退地点记录失败");
         }
     }
 
@@ -193,6 +195,7 @@ public class TpBookDataService {
 
     /**
      * 获取公共地点
+     *
      * @param num
      * @return
      */
@@ -200,8 +203,8 @@ public class TpBookDataService {
         String path = "public.tp." + num;
         if (tpbSaveData.contains(path)) {
             Telepoter telepoter = new Telepoter(String.valueOf(num),
-                    tpbSaveData.getString(path + ".name",null),
-                    (Location)tpbSaveData.get(path + ".location",null),
+                    tpbSaveData.getString(path + ".name", null),
+                    (Location) tpbSaveData.get(path + ".location", null),
                     1);
             return telepoter;
         }
@@ -210,6 +213,7 @@ public class TpBookDataService {
 
     /**
      * 获取私人地点
+     *
      * @param uuid
      * @param num
      * @return
@@ -218,8 +222,8 @@ public class TpBookDataService {
         String path = "player." + uuid + ".tp." + num;
         if (tpbSaveData.contains(path)) {
             Telepoter telepoter = new Telepoter(String.valueOf(num),
-                    tpbSaveData.getString(path + ".name",null),
-                    (Location)tpbSaveData.get(path + ".location",null),
+                    tpbSaveData.getString(path + ".name", null),
+                    (Location) tpbSaveData.get(path + ".location", null),
                     1);
             return telepoter;
         }
@@ -228,6 +232,7 @@ public class TpBookDataService {
 
     /**
      * 获取玩家快速传送点
+     *
      * @param uuid
      * @return
      */
@@ -235,8 +240,8 @@ public class TpBookDataService {
         String path = "player." + uuid + ".fast.tp";
         if (tpbSaveData.contains(path)) {
             Telepoter telepoter = new Telepoter("",
-                    tpbSaveData.getString(path + ".name",null),
-                    (Location)tpbSaveData.get(path + ".location",null),
+                    tpbSaveData.getString(path + ".name", null),
+                    (Location) tpbSaveData.get(path + ".location", null),
                     1);
             return telepoter;
         }
@@ -245,6 +250,7 @@ public class TpBookDataService {
 
     /**
      * 获取玩家的回退地点
+     *
      * @param uuid
      * @return
      */
@@ -253,8 +259,8 @@ public class TpBookDataService {
         telepoter.setType(4);
         String path = "player." + uuid + ".before.tp";
         if (tpbSaveData.contains(path)) {
-            telepoter.setName(tpbSaveData.getString(path + ".name",null));
-            telepoter.setLocation((Location)tpbSaveData.get(path + ".location",null));
+            telepoter.setName(tpbSaveData.getString(path + ".name", null));
+            telepoter.setLocation((Location) tpbSaveData.get(path + ".location", null));
             return telepoter;
         }
         return null;
@@ -262,6 +268,7 @@ public class TpBookDataService {
 
     /**
      * 获取死亡地点
+     *
      * @param uuid
      * @param num
      * @return
@@ -270,8 +277,8 @@ public class TpBookDataService {
         String path = "player." + uuid + ".dead.tp." + num;
         if (tpbSaveData.contains(path)) {
             Telepoter telepoter = new Telepoter(String.valueOf(num),
-                    tpbSaveData.getString(path + ".name",null),
-                    (Location)tpbSaveData.get(path + ".location",null),
+                    tpbSaveData.getString(path + ".name", null),
+                    (Location) tpbSaveData.get(path + ".location", null),
                     1);
             return telepoter;
         }
@@ -289,7 +296,7 @@ public class TpBookDataService {
             if (tpbSaveData.contains(path)) {
                 tpbSaveData.set(path, null);
                 int pCount = tpbSaveData.getInt("public.count", 0);
-                tpbSaveData.set("public.count", pCount-1);
+                tpbSaveData.set("public.count", pCount - 1);
                 saveTpbSaveData();
             }
             player.sendMessage("公共地点已删除");
@@ -304,16 +311,17 @@ public class TpBookDataService {
     public static void delPrivateTeleporter(Player player, int num) {
         String path = "player." + player.getUniqueId().toString();
         if (tpbSaveData.contains(path + ".tp." + num)) {
-            tpbSaveData.set(path+ ".tp." + num, null);
+            tpbSaveData.set(path + ".tp." + num, null);
             int pCount = tpbSaveData.getInt(path + ".count", 0);
-            tpbSaveData.set(path + ".count", pCount-1);
+            tpbSaveData.set(path + ".count", pCount - 1);
             saveTpbSaveData();
         }
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR,new TextComponent(ChatColor.BOLD +""+ChatColor.RED + "传送点已删除"));
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.BOLD + "" + ChatColor.RED + "传送点已删除"));
     }
 
     /**
      * 获取可用的位置序号,已int最大值为范围，循环使用
+     *
      * @param path
      * @return
      */

@@ -44,6 +44,7 @@ public class TpBookService {
             doShiftClickAction(player);
         } else {
             Action action = event.getAction();
+            // (右击快 && 物体不是可交互的) || 右键空气
             if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)){
                 event.setCancelled(true);
                 TpBookGUI.openBook(event.getPlayer());

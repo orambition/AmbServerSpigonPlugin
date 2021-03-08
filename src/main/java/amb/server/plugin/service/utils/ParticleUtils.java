@@ -24,10 +24,10 @@ public class ParticleUtils {
             return;
         }
         BukkitTask task = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(PluginCore.getInstance(),
-                () -> drawLine(pos1, pos2), 0, 10);
+                () -> drawLine(pos1, pos2), 0, 20);
         Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginCore.getInstance(), () -> {
             if (!task.isCancelled()) task.cancel();
-        }, 400);
+        }, 300);
     }
 
     public static void drawLine(Location pos1, Location pos2) {

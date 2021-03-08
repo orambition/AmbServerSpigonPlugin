@@ -28,8 +28,19 @@ public class PlayerUtils {
         return player.removeScoreboardTag(key);
     }
 
+    /**
+     * 通过 等级 获取玩家经验，没有考虑当前经验
+     * @param player
+     * @return
+     */
     public static double getExp(Player player) {
         int level = player.getLevel();
+        return getExp(level);
+    }
+    public static double getExp(int level) {
+        if (level <= 0) {
+            return 0;
+        }
         if (level <= 16) {
             return Math.pow(level, 2) + 6 * level;
         } else if (level <= 31) {
@@ -37,12 +48,5 @@ public class PlayerUtils {
         } else {
             return 4.5 * Math.pow(level, 2) - 162.5 * level + 2220;
         }
-    }
-
-    public static void changeExp(Player player, double exp) {
-        double currentExp = getExp(player);
-        player.setExp(0);
-        player.setLevel(0);
-        player.giveExp((int) (currentExp + exp));
     }
 }

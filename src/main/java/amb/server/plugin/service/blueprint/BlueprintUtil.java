@@ -3,6 +3,7 @@ package amb.server.plugin.service.blueprint;
 import amb.server.plugin.core.PluginCore;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -34,11 +35,8 @@ public class BlueprintUtil {
     public static Location setSelectedLocation(Player player, String pos, Location location) {
         player.removeMetadata(pos, PluginCore.getInstance());
         player.setMetadata(pos, new FixedMetadataValue(PluginCore.getInstance(), location));
-        player.sendMessage("[½¨ÖþÀ¶Í¼]" + pos
-                + ". "+ location.getWorld().getName()
-                + ": x=" + location.getBlockX()
-                + ", y=" + location.getBlockY()
-                + ", z=" + location.getBlockZ());
+        player.playSound(location, Sound.BLOCK_NOTE_BLOCK_BASS, 2, 1);
+        player.sendMessage("[½¨ÖþÀ¶Í¼] " + pos);
         return location;
     }
 
@@ -52,6 +50,10 @@ public class BlueprintUtil {
     public static void delSelected(Player player) {
         player.removeMetadata(SELECT_LOCATION_1, PluginCore.getInstance());
         player.removeMetadata(SELECT_LOCATION_2, PluginCore.getInstance());
+    }
+
+    public static void delSelected(Player player, String pos) {
+        player.removeMetadata(pos, PluginCore.getInstance());
     }
 
     public static int[] getRange(Location pos1, Location pos2) {
@@ -104,7 +106,7 @@ public class BlueprintUtil {
                 || currentItem.getType().name().contains(_AXE));
     }
 
-    public static Map<String, List<ItemStack>> convertItemList2Map(Player player, List<ItemStack> itemStackList) {
+    public static Map<String, List<ItemStack>> convertItemList2Map(List<ItemStack> itemStackList) {
         if (itemStackList == null || itemStackList.isEmpty()) {
             return null;
         }
@@ -112,13 +114,6 @@ public class BlueprintUtil {
         for (ItemStack i : itemStackList) {
             for (String s : validBreakItem) {
                 if (i.getType().name().contains(s)) {
-                    Damageable damageable = ((Damageable) i.getItemMeta());
-                    player.sendMessage("demage=" + damageable.getDamage() + "has=" + damageable.hasDamage());
-
-                    if (!damageable.hasDamage()) {
-                        damageable.setDamage(i.getType().getMaxDurability());
-                        i.setItemMeta((ItemMeta) damageable);
-                    }
                     stringListMap.putIfAbsent(s, new ArrayList<>());
                     stringListMap.get(s).add(i);
                     break;
