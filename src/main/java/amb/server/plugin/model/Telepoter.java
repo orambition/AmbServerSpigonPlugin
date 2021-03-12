@@ -52,7 +52,7 @@ public class Telepoter {
         List<String> lore = new ArrayList<String>();
         lore.add(ChatColor.GOLD + "点击传送到此地点");
         lore.add(ChatColor.RESET +""+ ChatColor.RED +"此操作将花费:");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "- ["+tpBookCurrencyItemName + "x" +tpBookAddTpPrice+"] 或:");
+        lore.add(ChatColor.GOLD + "- ["+tpBookCurrencyItemName + "x" +tpBookAddTpPrice+"] 或:");
         lore.add(ChatColor.GREEN + "- ["+tpBookAddTpPrice+"页]传送书");
         switch (type){
             case 1:

@@ -81,7 +81,7 @@ public class TpBookGUI {
     private static ItemStack buildMenuItem(Material material, String name, String num, List<String> lore) {
         ItemStack itemStack = new ItemStack(material, 1);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.GOLD + name);
+        itemMeta.setDisplayName(ChatColor.GOLD + name);
         itemMeta.setLore(lore);
         if (StringUtils.isNotBlank(num)) {
             itemMeta.addEnchant(Enchantment.DAMAGE_ALL, Integer.parseInt(num), true);
@@ -94,12 +94,12 @@ public class TpBookGUI {
     private static ItemStack buildMenuItem(Player player) {
         ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta itemMeta = (SkullMeta) itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.GOLD + player.getDisplayName());
+        itemMeta.setDisplayName(ChatColor.GOLD + player.getDisplayName());
         itemMeta.setOwningPlayer(player);
         List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "点击传送至此玩家");
-        lore.add(ChatColor.RESET + "" + ChatColor.RED + "此操作将花费:");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "- [" + tpBookCurrencyItemName + "x" + tpBookAddTpPrice + "] 或:");
+        lore.add(ChatColor.GOLD + "点击传送至此玩家");
+        lore.add(ChatColor.RED + "此操作将花费:");
+        lore.add(ChatColor.GOLD + "- [" + tpBookCurrencyItemName + "x" + tpBookAddTpPrice + "] 或:");
         lore.add(ChatColor.GREEN + "- [" + tpBookAddTpPrice + "页]传送书");
 
         itemMeta.setLore(lore);
@@ -115,20 +115,20 @@ public class TpBookGUI {
             itemStack = new ItemStack(switchTpItem, 1);
         }
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.GOLD + "是否允许其他人传送到身边");
+        itemMeta.setDisplayName(ChatColor.GOLD + "是否允许其他人传送到身边");
         List<String> lore = new ArrayList<String>();
         lore.add(ChatColor.RESET + "当前设置为:");
         if (0 == tpSwitch) {
-            lore.add(ChatColor.RESET + "" + ChatColor.RED + "不允许任何人传送到身边");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "点击开启位置共享");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "允许其他人传送到身边");
+            lore.add(ChatColor.RED + "不允许任何人传送到身边");
+            lore.add(ChatColor.GOLD + "点击开启位置共享");
+            lore.add(ChatColor.GOLD + "允许其他人传送到身边");
         } else {
             if (1 == tpSwitch) {
-                lore.add(ChatColor.RESET + "" + ChatColor.RED + "允许任何人传送到身边");
-                lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "点击切换设置");
+                lore.add(ChatColor.RED + "允许任何人传送到身边");
+                lore.add(ChatColor.GOLD + "点击切换设置");
             } else {
-                lore.add(ChatColor.RESET + "" + ChatColor.RED + "传送前发出申请");
-                lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "点击切换为禁止传送");
+                lore.add(ChatColor.RED + "传送前发出申请");
+                lore.add(ChatColor.GOLD + "点击切换为禁止传送");
             }
         }
         itemMeta.setLore(lore);
@@ -139,13 +139,13 @@ public class TpBookGUI {
     private static ItemStack buildAddMenuItem(int price) {
         ItemStack itemStack = new ItemStack(addPrivateTpItem, 1);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.GOLD + "添加传送点");
+        itemMeta.setDisplayName(ChatColor.GOLD + "添加传送点");
         itemMeta.addEnchant(Enchantment.DAMAGE_ALL, price, true);
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         List<String> lore = new ArrayList<String>();
         lore.add(ChatColor.RESET + "点击将所在位置标记为传送点");
-        lore.add(ChatColor.RESET + "" + ChatColor.RED + "此操作将花费:");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "- [" + tpBookCurrencyItemName + "x" + price + "]");
+        lore.add(ChatColor.RED + "此操作将花费:");
+        lore.add(ChatColor.GOLD + "- [" + tpBookCurrencyItemName + "x" + price + "]");
         if (price < 10) {
             lore.add(ChatColor.GREEN + "或:[" + price * 100 + "点经验值]");
         }
@@ -157,13 +157,13 @@ public class TpBookGUI {
     private static ItemStack buildDeadInfoMenuItem() {
         ItemStack itemStack = new ItemStack(deadInfoItem, 1);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.GOLD + "再续前缘");
+        itemMeta.setDisplayName(ChatColor.GOLD + "再续前缘");
         List<String> lore = new ArrayList<String>();
         lore.add(ChatColor.RESET + "携带传送书死亡时");
         lore.add(ChatColor.RESET + "死亡地点会被记录");
-        lore.add(ChatColor.RESET + "" + ChatColor.RED + "并消耗一本传送书!");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "复活后会立即获得:");
-        lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "[一次] 传送机会!");
+        lore.add(ChatColor.RED + "并消耗一本传送书!");
+        lore.add(ChatColor.GOLD + "复活后会立即获得:");
+        lore.add(ChatColor.GOLD + "[一次] 传送机会!");
 
         itemMeta.setLore(lore);
         itemStack.setItemMeta(itemMeta);
@@ -178,22 +178,22 @@ public class TpBookGUI {
     private static ItemStack buildFastInfoMenuItem(String uuid) {
         ItemStack itemStack = new ItemStack(privateFastTpItem, 1);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.GOLD + "快速传送点");
+        itemMeta.setDisplayName(ChatColor.GOLD + "快速传送点");
         List<String> lore = new ArrayList<String>();
 
         Telepoter telepoter = getPrivateFastTeleporter(uuid);
         if (null != telepoter){
-            lore.add(ChatColor.RESET + "" + ChatColor.GREEN + "当前地点为:");
-            lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "["+telepoter.getName()+"]");
+            lore.add(ChatColor.GREEN + "当前地点为:");
+            lore.add(ChatColor.GOLD + "["+telepoter.getName()+"]");
             lore.add(ChatColor.RESET + "当[手持传送书]时");
             lore.add(ChatColor.RESET + "以[潜行状态]使用传送书");
             lore.add(ChatColor.RESET + "可快速传送至此地点");
             lore.add(ChatColor.RESET +  "" + ChatColor.RED + "此操作同样消耗费用");
         }else {
-            lore.add(ChatColor.RESET + "" + ChatColor.RED + "[当前地点为空]");
-            lore.add(ChatColor.RESET + "" + ChatColor.GREEN + "在[传送书菜单]使用");
-            lore.add(ChatColor.RESET + "" + ChatColor.GREEN + "[Shift+鼠标左键]");
-            lore.add(ChatColor.RESET + "" + ChatColor.GREEN + "可设置地点为快速传送点");
+            lore.add(ChatColor.RED + "[当前地点为空]");
+            lore.add(ChatColor.GREEN + "在[传送书菜单]使用");
+            lore.add(ChatColor.GREEN + "[Shift+鼠标左键]");
+            lore.add(ChatColor.GREEN + "可设置地点为快速传送点");
         }
 
         itemMeta.setLore(lore);

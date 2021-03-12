@@ -30,11 +30,12 @@ import static amb.server.plugin.service.tpb.TpBookDataService.*;
 public class TpBookService {
     /**
      * 玩家点击传送书事件
+     *
      * @param event
      */
     public static void useTpBookEvent(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!player.hasPermission(PermissionConstant.TPB)){
+        if (!player.hasPermission(PermissionConstant.TPB)) {
             player.sendMessage("无权限使用!请联系Amb");
             return;
         }
@@ -45,43 +46,44 @@ public class TpBookService {
         } else {
             Action action = event.getAction();
             // (右击快 && 物体不是可交互的) || 右键空气
-            if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)){
+            if ((action.equals(Action.RIGHT_CLICK_BLOCK) && !event.getClickedBlock().getType().isInteractable()) || action.equals(Action.RIGHT_CLICK_AIR)) {
                 event.setCancelled(true);
                 TpBookGUI.openBook(event.getPlayer());
-            } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)){
+            } else if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)) {
                 event.setCancelled(true);
                 TpBookGUI.openMenu(event.getPlayer());
             }
         }
     }
+
     public static void clickViewMenuEvent(InventoryClickEvent event) {
-        event.setCancelled(true);
-        if (event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.CHEST) {
-            Player player = (Player) event.getWhoClicked();
-            if (!player.hasPermission(PermissionConstant.TPB)) {
-                player.sendMessage("无权限使用!请联系Amb");
-                return;
-            }
-            ItemStack clickedItem = event.getCurrentItem();
-            player.updateInventory();
-            player.closeInventory();
-            boolean delete = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isRightClick();
-            boolean setFast = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isLeftClick();
-            doClickAction(player, clickedItem, delete, setFast);
+        Player player = (Player) event.getWhoClicked();
+        if (!player.hasPermission(PermissionConstant.TPB)) {
+            player.sendMessage("无权限使用!请联系Amb");
+            return;
         }
+        ItemStack clickedItem = event.getCurrentItem();
+        player.updateInventory();
+        player.closeInventory();
+        boolean delete = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isRightClick();
+        boolean setFast = event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClick().isLeftClick();
+        doClickAction(player, clickedItem, delete, setFast);
     }
+
     /**
      * 玩家shift点击传送书
+     *
      * @param player
      */
-    private static void doShiftClickAction(Player player){
+    private static void doShiftClickAction(Player player) {
         Telepoter telepoter = getPrivateFastTeleporter(player.getUniqueId().toString());
         if (telepoter != null) {
             tpPlayerToLocation(player, telepoter.getLocation());
-        }else {
+        } else {
             player.sendMessage(ChatColor.RED + "快速传送点为空，无法传送！");
         }
     }
+
     /**
      * 玩家点击传送菜单
      *
@@ -101,7 +103,7 @@ public class TpBookService {
                 return;
             }
             telepoter = getPublicTeleporterByNum(num);
-            if (setFast){
+            if (setFast) {
                 setFastTeleporter(player, telepoter);
                 return;
             }
@@ -112,7 +114,7 @@ public class TpBookService {
                 return;
             }
             telepoter = getPrivateTeleporterByNum(playerUUID, num);
-            if (setFast){
+            if (setFast) {
                 setFastTeleporter(player, telepoter);
                 return;
             }
@@ -153,7 +155,7 @@ public class TpBookService {
         } else {
             return;
         }
-        if (null != telepoter && null != telepoter.getLocation()){
+        if (null != telepoter && null != telepoter.getLocation()) {
             tpPlayerToLocation(player, telepoter.getLocation());
         } else {
             //player.sendMessage("传送点不存在了,无法传送");
@@ -193,7 +195,7 @@ public class TpBookService {
         //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("已传送至"+toPlayer.getDisplayName()));
     }
 
-    private static boolean doTpPlayer(Player player, Location location){
+    private static boolean doTpPlayer(Player player, Location location) {
         if (costPrice(player)) {
             Telepoter beforeTelepoter = new Telepoter(null, "前一地点", player.getLocation(), 4);
             /*Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(
@@ -208,8 +210,10 @@ public class TpBookService {
         }
         return false;
     }
+
     /**
      * 传输至玩家时发送请求
+     *
      * @param player
      * @param reqPlayer
      */
@@ -336,18 +340,19 @@ public class TpBookService {
     /**
      * 传输玩家宠物
      * 需要先于玩家传送，以防止区块卸载
+     *
      * @param player
      * @param location
      */
-    private static void needTpPet(Player player, Location location){
-        if (!player.getWorld().equals(location.getWorld())){
+    private static void needTpPet(Player player, Location location) {
+        if (!player.getWorld().equals(location.getWorld())) {
             return;
         }
         Collection<Entity> pets = player.getWorld().getEntitiesByClasses(Tameable.class);
-        pets.forEach(e->{
-            if (((Tameable)e).isTamed()
-                    && !((Sittable)e).isSitting()
-                    && ((Tameable)e).getOwner().getUniqueId().equals(player.getUniqueId())){
+        pets.forEach(e -> {
+            if (((Tameable) e).isTamed()
+                    && !((Sittable) e).isSitting()
+                    && ((Tameable) e).getOwner().getUniqueId().equals(player.getUniqueId())) {
                 e.teleport(location);
                 player.sendMessage("tp pet");
             }

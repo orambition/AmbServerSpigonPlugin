@@ -1,6 +1,8 @@
 package amb.server.plugin.service.utils;
 
+import amb.server.plugin.core.PluginCore;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * @author zhangrenjing
@@ -12,7 +14,15 @@ public class PlayerUtils {
     // 建筑蓝图选择器 使用后冷却的tag
     public static final String PLAYER_BLUEPRINT_SELECT = "Amb_Blueprint_Select_Cooling";
 
+    public static final String PLAYER_DM_KEY_BLUEPRINT_MODE = "BLUEPRINT_MODE";
+    public static final String PLAYER_DM_KEY_SELECT_LOCATION_1 = "selected pos 1";
+    public static final String PLAYER_DM_KEY_SELECT_LOCATION_2 = "selected pos 2";
+    public static final String PLAYER_DM_KEY_SELECT_LOCATION_3 = "selected pos 3";
+
     public static boolean mark(Player player, String key) {
+        return player.removeScoreboardTag(key);
+    }
+    public static boolean unMark(Player player, String key) {
         return player.removeScoreboardTag(key);
     }
 
@@ -24,8 +34,17 @@ public class PlayerUtils {
         return !player.getScoreboardTags().contains(key);
     }
 
-    public static boolean unMark(Player player, String key) {
-        return player.removeScoreboardTag(key);
+    public static void setMetadata(Player player, String key, Object obj) {
+        player.setMetadata(key, new FixedMetadataValue(PluginCore.getInstance(), obj));
+    }
+    public static Object getMetadata(Player player, String key) {
+        if (player.hasMetadata(key) && player.getMetadata(key) != null && !player.getMetadata(key).isEmpty()) {
+            return player.getMetadata(key).get(0).value();
+        }
+        return null;
+    }
+    public static void removeMetadata(Player player, String key) {
+        player.removeMetadata(key, PluginCore.getInstance());
     }
 
     /**

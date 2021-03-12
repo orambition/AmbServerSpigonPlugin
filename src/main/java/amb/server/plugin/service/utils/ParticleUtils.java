@@ -24,10 +24,10 @@ public class ParticleUtils {
             return;
         }
         BukkitTask task = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(PluginCore.getInstance(),
-                () -> drawLine(pos1, pos2), 0, 20);
+                () -> drawLine(pos1, pos2), 0, 40);
         Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginCore.getInstance(), () -> {
             if (!task.isCancelled()) task.cancel();
-        }, 300);
+        }, 200);
     }
 
     public static void drawLine(Location pos1, Location pos2) {
@@ -38,7 +38,7 @@ public class ParticleUtils {
         // pos1.getWorld().spawnParticle(Particle.CRIT, pos1x, pos1y, pos1z, 0, 0, pos2y - pos1y, 0, 1.0);
         int[] xyzRange = BlueprintUtil.getRange(pos1, pos2);
 
-        for (double x = xyzRange[0]; x <= xyzRange[1] + 1; x += 0.3) {
+        for (double x = xyzRange[0]; x <= xyzRange[1] + 1; x += 0.25) {
             pos1.getWorld().spawnParticle(Particle.COMPOSTER, x, xyzRange[2], xyzRange[4], 1);
             pos1.getWorld().spawnParticle(Particle.COMPOSTER, x, xyzRange[3] + 1, xyzRange[4], 1);
             pos1.getWorld().spawnParticle(Particle.COMPOSTER, x, xyzRange[2], xyzRange[5] + 1, 1);

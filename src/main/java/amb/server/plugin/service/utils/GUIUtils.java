@@ -32,4 +32,5 @@ public class GUIUtils {
     public static void sendMsg(Player player, String msg){
         player.sendTitle(" ",ChatColor.GREEN + msg,10,30,10);
     }
+
 }

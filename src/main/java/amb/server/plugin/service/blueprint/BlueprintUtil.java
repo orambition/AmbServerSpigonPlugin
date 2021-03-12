@@ -1,29 +1,27 @@
 package amb.server.plugin.service.blueprint;
 
+import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.core.PluginCore;
+import amb.server.plugin.service.utils.PlayerUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
-import static amb.server.plugin.service.blueprint.BlueprintService.SELECT_LOCATION_1;
-import static amb.server.plugin.service.blueprint.BlueprintService.SELECT_LOCATION_2;
+import static amb.server.plugin.service.utils.PlayerUtils.*;
 
 /**
  * @author zhangrenjing
  * created on 2021/3/6
  */
 public class BlueprintUtil {
+
     // ½££º_SWORD¡¢ÇÂ£º_SHOVEL¡¢¸ä£º_PICKAXE¡¢¸«£º_AXE¡¢³ú£º_HOE
     public static final String _SWORD = "_SWORD";
     public static final String _SHOVEL = "_SHOVEL";
@@ -32,28 +30,71 @@ public class BlueprintUtil {
     public static final String _HOE = "_HOE";
     private static final String[] validBreakItem = new String[]{_SHOVEL, _PICKAXE, _AXE};
 
-    public static Location setSelectedLocation(Player player, String pos, Location location) {
-        player.removeMetadata(pos, PluginCore.getInstance());
-        player.setMetadata(pos, new FixedMetadataValue(PluginCore.getInstance(), location));
-        player.playSound(location, Sound.BLOCK_NOTE_BLOCK_BASS, 2, 1);
+    public static Location setSelectedLocation1(Player player, Location location) {
+        return setSelectedLocation(player, PLAYER_DM_KEY_SELECT_LOCATION_1, location);
+    }
+    public static Location setSelectedLocation2(Player player, Location location) {
+        return setSelectedLocation(player, PLAYER_DM_KEY_SELECT_LOCATION_2, location);
+    }
+    public static Location setSelectedLocation3(Player player, Location location) {
+        return setSelectedLocation(player, PLAYER_DM_KEY_SELECT_LOCATION_3, location);
+    }
+
+    private static Location setSelectedLocation(Player player, String pos, Location location) {
+        PlayerUtils.setMetadata(player, pos, location);
+        player.playSound(location, pos.equals(PLAYER_DM_KEY_SELECT_LOCATION_1) ? Sound.BLOCK_NOTE_BLOCK_BASS : Sound.BLOCK_NOTE_BLOCK_BANJO, 2, 1);
         player.sendMessage("[½¨ÖþÀ¶Í¼] " + pos);
         return location;
     }
 
-    public static Location getSelectedLocation(Player player, String pos) {
-        if (player.hasMetadata(pos) && player.getMetadata(pos) != null && player.getMetadata(pos).size() > 0) {
-            return ((Location) player.getMetadata(pos).get(0).value());
+    public static boolean isValidRange(Player player, Location pos1, Location pos2) {
+        if (pos1 == null || pos2 == null || pos1.getWorld() == null || !Objects.equals(pos1.getWorld(), pos2.getWorld())) {
+            return false;
+        }
+
+        int xSize = Math.abs(pos1.getBlockX() - pos2.getBlockX());
+        int ySize = Math.abs(pos1.getBlockY() - pos2.getBlockY());
+        int zSize = Math.abs(pos1.getBlockZ() - pos2.getBlockZ());
+        if (xSize > PluginConfig.blueprintSelectorMaxRange
+                || ySize > PluginConfig.blueprintSelectorMaxRange
+                || zSize > PluginConfig.blueprintSelectorMaxRange) {
+            player.sendMessage("[½¨ÖþÀ¶Í¼] Ñ¡Ôñ·¶Î§¹ý´ó£¬ÇëÖØÐÂÑ¡Ôñ£¡");
+            return false;
+        }
+        return true;
+    }
+
+    public static Location getSelectedLocation1(Player player) {
+        return getSelectedLocation(player, PLAYER_DM_KEY_SELECT_LOCATION_1);
+    }
+    public static Location getSelectedLocation2(Player player) {
+        return getSelectedLocation(player, PLAYER_DM_KEY_SELECT_LOCATION_2);
+    }
+    public static Location getSelectedLocation3(Player player) {
+        return getSelectedLocation(player, PLAYER_DM_KEY_SELECT_LOCATION_3);
+    }
+
+    private static Location getSelectedLocation(Player player, String pos) {
+        Object obj = PlayerUtils.getMetadata(player, pos);
+        if (obj != null) {
+            return (Location) obj;
         }
         return null;
     }
 
     public static void delSelected(Player player) {
-        player.removeMetadata(SELECT_LOCATION_1, PluginCore.getInstance());
-        player.removeMetadata(SELECT_LOCATION_2, PluginCore.getInstance());
+        PlayerUtils.removeMetadata(player, PLAYER_DM_KEY_SELECT_LOCATION_1);
+        PlayerUtils.removeMetadata(player, PLAYER_DM_KEY_SELECT_LOCATION_2);
+        PlayerUtils.removeMetadata(player, PLAYER_DM_KEY_SELECT_LOCATION_3);
     }
-
-    public static void delSelected(Player player, String pos) {
-        player.removeMetadata(pos, PluginCore.getInstance());
+    public static void delSelected1(Player player) {
+        PlayerUtils.removeMetadata(player, PLAYER_DM_KEY_SELECT_LOCATION_1);
+    }
+    public static void delSelected2(Player player) {
+        PlayerUtils.removeMetadata(player, PLAYER_DM_KEY_SELECT_LOCATION_2);
+    }
+    public static void delSelected3(Player player) {
+        PlayerUtils.removeMetadata(player, PLAYER_DM_KEY_SELECT_LOCATION_3);
     }
 
     public static int[] getRange(Location pos1, Location pos2) {
@@ -90,37 +131,44 @@ public class BlueprintUtil {
         return new int[]{xMin, xMax, yMin, yMax, zMin, zMax};
     }
 
+    /**
+     * ²ÄÁÏÌî³ä½çÃæ Ð£Ñé²ÄÁÏÊÇ·ñÓÐÐ§
+     *
+     * @param itemStack
+     * @return
+     */
     public static boolean isValueBuildItem(ItemStack itemStack) {
-        return itemStack != null
-                && itemStack.getType().isBlock()
-                && itemStack.getType().isSolid()
-                && itemStack.getAmount() > 0
-                && !itemStack.getType().name().contains("_DOOR");
+        return itemStack != null && isValueMaterial(itemStack.getType());
     }
 
-    public static boolean isValueBreakItem(ItemStack currentItem) {
-        // ½££º_SWORD¡¢ÇÂ£º_SHOVEL¡¢¸ä£º_PICKAXE¡¢¸«£º_AXE¡¢³ú£º_HOE
-        return currentItem != null
-                && (currentItem.getType().name().contains(_SHOVEL)
-                || currentItem.getType().name().contains(_PICKAXE)
-                || currentItem.getType().name().contains(_AXE));
+    public static boolean isValueCopyBlock(Block block) {
+        return block != null && isValueMaterial(block.getType());
+    }
+    public static boolean isValueMaterial(Material material) {
+        return material != null
+                && material.isBlock()
+                && material.isSolid()
+                && !material.name().contains("_DOOR");
     }
 
-    public static Map<String, List<ItemStack>> convertItemList2Map(List<ItemStack> itemStackList) {
-        if (itemStackList == null || itemStackList.isEmpty()) {
-            return null;
-        }
-        Map<String, List<ItemStack>> stringListMap = new HashMap<>();
-        for (ItemStack i : itemStackList) {
-            for (String s : validBreakItem) {
-                if (i.getType().name().contains(s)) {
-                    stringListMap.putIfAbsent(s, new ArrayList<>());
-                    stringListMap.get(s).add(i);
-                    break;
-                }
+    public static void syncBuild(Map<Block, Material> needProcessBlockMap) {
+        if (needProcessBlockMap == null || needProcessBlockMap.isEmpty()) return;
+        Bukkit.getServer().getScheduler().runTask(PluginCore.getInstance(), () -> {
+            for (Map.Entry<Block, Material> entry : needProcessBlockMap.entrySet()) {
+                entry.getKey().setType(entry.getValue());
+                //entry.getKey().getWorld().spawnFallingBlock(entry.getKey().getLocation().add(0.5, 20, 0.5), entry.getValue().createBlockData());
             }
-        }
-        return stringListMap;
+        });
     }
 
+    public static void syncBackBuildItem(Player player, List<ItemStack> backList) {
+        Bukkit.getServer().getScheduler().runTask(PluginCore.getInstance(), () -> {
+            StringBuilder stringBuilder = new StringBuilder("[½¨ÖþÀ¶Í¼] ²ÄÁÏ¹é»¹£º");
+            backList.forEach(i -> {
+                player.getWorld().dropItem(player.getLocation(), i);
+                stringBuilder.append(i.getType().name()).append("x").append(i.getAmount()).append(", ");
+            });
+            player.sendMessage(stringBuilder.toString());
+        });
+    }
 }

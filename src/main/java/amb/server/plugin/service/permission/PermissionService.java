@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 

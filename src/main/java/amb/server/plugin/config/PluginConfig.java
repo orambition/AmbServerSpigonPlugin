@@ -61,8 +61,10 @@ public class PluginConfig {
     public static Material blueprintSelectorItem;
     public static int blueprintSelectorMaxRange;
     public static String blueprintBuildItemPutName;
-    public static String blueprintBreakItemPutName;
+    public static String blueprintCopyItemPutName;
     public static int blueprintBreakItemNeedExpCount;
+    public static String blueprintModeSelectMenu;
+    public static int blueprintBatchPutMaxCount;
 
     public static void init(JavaPlugin plugin){
         getPluginConfig(plugin);
@@ -105,9 +107,11 @@ public class PluginConfig {
         /** 建筑蓝图 默认配置 **/
         pluginConfig.addDefault("blueprint.selector.item", Material.WOODEN_AXE.toString());
         pluginConfig.addDefault("blueprint.selector.range.max", 64);
-        pluginConfig.addDefault("blueprint.build.put.view.name", "建筑蓝图-材料填充");
-        pluginConfig.addDefault("blueprint.break.put.view.name", "建筑蓝图-放入工具");
+        pluginConfig.addDefault("blueprint.build.put.view.name", "建筑蓝图 - 请放入[材料]");
+        pluginConfig.addDefault("blueprint.copy.put.view.name", "建筑蓝图 - 请放入粘贴所需的[材料]");
         pluginConfig.addDefault("blueprint.break.need.exp.count", 2);
+        pluginConfig.addDefault("blueprint.mod.select.menu", "构建蓝图 - 模式选择");
+        pluginConfig.addDefault("blueprint.batch.put.max.count", 4);
 
         pluginConfig.options().copyDefaults(true);
         plugin.saveConfig();
@@ -146,8 +150,10 @@ public class PluginConfig {
         blueprintSelectorItem = Material.getMaterial(pluginConfig.getString("blueprint.selector.item"));
         blueprintSelectorMaxRange = pluginConfig.getInt("blueprint.selector.range.max", 64);
         blueprintBuildItemPutName = pluginConfig.getString("blueprint.build.put.view.name");
-        blueprintBreakItemPutName = pluginConfig.getString("blueprint.break.put.view.name");
+        blueprintCopyItemPutName = pluginConfig.getString("blueprint.copy.put.view.name");
         blueprintBreakItemNeedExpCount = pluginConfig.getInt("blueprint.break.need.exp.count", 2);
+        blueprintModeSelectMenu = pluginConfig.getString("blueprint.mod.select.menu");
+        blueprintBatchPutMaxCount = pluginConfig.getInt("blueprint.batch.put.max.count", 4);
     }
     /** 传送书 数据存储 **/
     private static void getTpbSaveData(JavaPlugin plugin){

@@ -3,6 +3,8 @@ package amb.server.plugin.listener;
 import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.service.blueprint.BlueprintService;
 import amb.server.plugin.service.blueprint.BlueprintUtil;
+import amb.server.plugin.service.blueprint.mode.CopyMode;
+import amb.server.plugin.service.blueprint.mode.FillingMode;
 import amb.server.plugin.service.permission.PermissionConstant;
 import amb.server.plugin.service.radar.RadarService;
 import amb.server.plugin.service.tpb.TpBookGUI;
@@ -61,31 +63,32 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerClickMenu(InventoryClickEvent event) {
         if (event.getView().getTitle().equals(PluginConfig.tpBookMenuTitle)
+                && event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.CHEST
                 && event.getCurrentItem() != null) {
+            event.setCancelled(true);
             // 点击传送书界面
             TpBookService.clickViewMenuEvent(event);
         } else if (event.getView().getTitle().equals(PluginConfig.radarName)
-                && event.getClickedInventory() != null
-                && event.getClickedInventory().getType() == InventoryType.CHEST) {
+                && event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.CHEST) {
             // 点击雷达界面
             if (event.getSlot() != 11 && event.getSlot() != 15) {
                 event.setCancelled(true);
             }
-        } else if (event.getView().getTitle().equals(PluginConfig.blueprintBuildItemPutName)) {
+        } else if (event.getView().getTitle().equals(PluginConfig.blueprintModeSelectMenu)
+                && event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.CHEST) {
+            // 建筑蓝图 模式选择界面
+            event.setCancelled(true);
+            BlueprintService.doClickMenuEvent(event);
+        } else if (event.getView().getTitle().equals(PluginConfig.blueprintBuildItemPutName)
+                || event.getView().getTitle().equals(PluginConfig.blueprintCopyItemPutName)) {
             // 建筑蓝图 材料填充页面，限制放入的材料
             ItemStack currentItem = event.getCursor() != null && event.getCursor().getType() != Material.AIR ?
                     event.getCursor() : event.getCurrentItem();
             if (!BlueprintUtil.isValueBuildItem(currentItem)) {
                 event.setCancelled(true);
             }
-        } else if (event.getView().getTitle().equals(PluginConfig.blueprintBreakItemPutName)) {
-            // 建筑蓝图 工具填充页面，限制放入的工具
-            ItemStack currentItem = event.getCursor() != null && event.getCursor().getType() != Material.AIR ?
-                    event.getCursor() : event.getCurrentItem();
-            if (!BlueprintUtil.isValueBreakItem(currentItem)) {
-                event.setCancelled(true);
-            }
         }
+
     }
 
     @EventHandler
@@ -95,10 +98,9 @@ public class PlayerListener implements Listener {
             RadarService.setTargetAndPower((Player) event.getPlayer(), event.getInventory().getItem(11), event.getInventory().getItem(15));
         } else if (event.getView().getTitle().equals(PluginConfig.blueprintBuildItemPutName)) {
             // 关闭建筑蓝图 材料填充界面
-            BlueprintService.doBlueprint((Player) event.getPlayer(), event.getInventory().getContents(), false);
-        } else if (event.getView().getTitle().equals(PluginConfig.blueprintBreakItemPutName)) {
-            // 关闭建筑蓝图 工具选择界面
-            BlueprintService.doBlueprint((Player) event.getPlayer(), event.getInventory().getContents(), true);
+            FillingMode.closeMenu((Player) event.getPlayer(), event.getInventory().getContents());
+        } else if (event.getView().getTitle().equals(PluginConfig.blueprintCopyItemPutName)) {
+            CopyMode.closeMenu((Player) event.getPlayer(), event.getInventory().getContents());
         }
     }
 
