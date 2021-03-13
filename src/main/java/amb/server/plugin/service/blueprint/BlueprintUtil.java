@@ -2,6 +2,7 @@ package amb.server.plugin.service.blueprint;
 
 import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.core.PluginCore;
+import amb.server.plugin.service.utils.ParticleUtils;
 import amb.server.plugin.service.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -42,8 +43,9 @@ public class BlueprintUtil {
 
     private static Location setSelectedLocation(Player player, String pos, Location location) {
         PlayerUtils.setMetadata(player, pos, location);
-        player.playSound(location, pos.equals(PLAYER_DM_KEY_SELECT_LOCATION_1) ? Sound.BLOCK_NOTE_BLOCK_BASS : Sound.BLOCK_NOTE_BLOCK_BANJO, 2, 1);
-        player.sendMessage("[½¨ÖþÀ¶Í¼] " + pos);
+        player.playSound(location, pos.equals(PLAYER_DM_KEY_SELECT_LOCATION_1) ? Sound.BLOCK_NOTE_BLOCK_BANJO : Sound.BLOCK_NOTE_BLOCK_BASS, 2, 1);
+        ParticleUtils.drawLine(location, location);
+        //player.sendMessage("[½¨ÖþÀ¶Í¼] " + pos);
         return location;
     }
 

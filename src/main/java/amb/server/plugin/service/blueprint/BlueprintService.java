@@ -47,11 +47,11 @@ public class BlueprintService {
             if (event.getClickedBlock() != null && event.getClickedBlock().getType().isInteractable()) {
                 return;
             }
+            event.setCancelled(true);
             Action action = event.getAction();
 
             // 潜行 打开模式选择菜单
             if (player.isSneaking() && (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK))) {
-                event.setCancelled(true);
                 openModeSelectMenu(player);
                 return;
             }
@@ -65,8 +65,11 @@ public class BlueprintService {
             }
             // 潜行 复制粘贴模式 独有
             else if (MENU_ITEM_COPY.name.equals(modeName) && player.isSneaking()) {
-                event.setCancelled(true);
                 CopyMode.doShiftUseEvent(player);
+            }
+            // 右键空气 批量放置模式 独有
+            else if (MENU_ITEM_BATCH_PUT.name.equals(modeName) && action.equals(Action.RIGHT_CLICK_AIR)) {
+                BatchPutMode.doUseEvent(player);
             }
             // 右键方块
             else if (action.equals(Action.RIGHT_CLICK_BLOCK)) {
@@ -127,7 +130,7 @@ public class BlueprintService {
             }
         } else if (MENU_ITEM_BATCH_PUT.name.equals(modeName)) {
             if (isRight) {
-                BatchPutMode.doUseEvent(player, location);
+                BatchPutMode.doUseEvent(player);
             } else {
                 BatchPutMode.doTouchEvent(player, location);
             }

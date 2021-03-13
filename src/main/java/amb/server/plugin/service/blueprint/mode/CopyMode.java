@@ -14,8 +14,11 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginLogger;
+import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static amb.server.plugin.service.utils.PlayerUtils.PLAYER_BLUEPRINT_SELECT;
@@ -25,6 +28,7 @@ import static amb.server.plugin.service.utils.PlayerUtils.PLAYER_BLUEPRINT_SELEC
  * created on 2021/3/12
  */
 public class CopyMode {
+    private static final Logger LOGGER = PluginLogger.getLogger("Ambition");
     /**
      * 右键
      * @param player
@@ -82,7 +86,7 @@ public class CopyMode {
         }
         Location location3 = BlueprintUtil.getSelectedLocation3(player);
         if (location3 == null) {
-            BlueprintUtil.setSelectedLocation3(player, player.getLocation());
+            BlueprintUtil.setSelectedLocation3(player, player.getEyeLocation());
             PlayerUtils.mark(player, PlayerUtils.PLAYER_BLUEPRINT_SELECT);
             GUIUtils.sendMsg(player, "再次[潜行+使用]/[Shift+右键]可以进行粘贴");
         } else {
@@ -130,24 +134,26 @@ public class CopyMode {
         World world = pos1.getWorld();
 
         // 异步运算
-        asyncCalculation(player, validItem, world, xyzRange, pos3);
+        asyncCalculation(player, validItem, world, xyzRange, pos3.clone());
     }
 
     private static void asyncCalculation(Player player, List<ItemStack> validItem, World world, int[] xyzRange, Location copyPos) {
         // 不能异步操作块
         Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginCore.getInstance(), () -> {
-            // 计算位置偏移量
-            Location playerPos = player.getLocation().clone();
+            Location playerPos = player.getEyeLocation().clone();
             Map<Material, List<ItemStack>> materialListMap = validItem.stream().collect(Collectors.groupingBy(i -> i.getType()));
             Map<Block, Material> needProcessBlockMap = new HashMap<>();
-
+            // 计算旋转角度
+            double[][] rotateMatrix = customAngle(copyPos, playerPos);
+            copyPos.add(-0.5, 0, -0.5);
             for (int x = xyzRange[0]; x <= xyzRange[1]; x++) {
                 for (int y = xyzRange[2]; y <= xyzRange[3]; y++) {
                     for (int z = xyzRange[4]; z <= xyzRange[5]; z++) {
                         Block block = world.getBlockAt(x, y, z);
                         if (BlueprintUtil.isValueCopyBlock(block) && materialListMap.containsKey(block.getType())) {
-                            Location subtract = block.getLocation().clone().subtract(copyPos);
-                            Block target = world.getBlockAt(playerPos.clone().add(subtract));
+                            // 计算位置偏移量
+                            Location subtract = customMove(copyPos, playerPos, block, rotateMatrix);
+                            Block target = world.getBlockAt(subtract);
                             if (target.isEmpty() || target.isPassable()) {
                                 Iterator<ItemStack> itemStackIterator = materialListMap.get(block.getType()).iterator();
                                 ItemStack index = itemStackIterator.next();
@@ -182,5 +188,44 @@ public class CopyMode {
         });
     }
 
+    private static double[][] customAngle(Location copyPos, Location playerPos) {
+        Vector copyV = customNormalize(copyPos.getDirection().clone());
+        Vector playerV = customNormalize(playerPos.getDirection().clone());
+        if (copyV.getX() == playerV.getX() && copyV.getZ() == playerV.getZ()) {
+            // 0 度
+            return new double[][]{{1, 0}, {0, 1}};
+        } else if ((copyV.getX() + playerV.getX()) == 0 && (copyV.getZ() + playerV.getZ()) == 0) {
+            // 180 度
+            return new double[][]{{-1, 0}, {0, -1}};
+        } else if ((copyV.getX() * playerV.getZ() - copyV.getZ() * playerV.getX()) > 0){
+            // +90 度
+            return new double[][]{{0, -1}, {1, 0}};
+        } else {
+            // -90 度
+            return new double[][]{{0, 1}, {-1, 0}};
+        }
+    }
 
+    private static Vector customNormalize(Vector vector) {
+        vector.setY(0);
+        double absX = Math.abs(vector.getX());
+        double absZ = Math.abs(vector.getZ());
+        if (absX > absZ) {
+            vector.setZ(0);
+            vector.setX(vector.getX()/absX);
+        } else {
+            vector.setX(0);
+            vector.setZ(vector.getZ()/absZ);
+        }
+        return vector;
+    }
+
+    private static Location customMove(Location copyPos, Location playerPos, Block block, double[][] rotateMatrix) {
+        Location subtract = block.getLocation().clone().subtract(copyPos);
+        double originX = subtract.getX();
+        double originZ = subtract.getZ();
+        subtract.setX(originX * rotateMatrix[0][0] + originZ * rotateMatrix[0][1]);
+        subtract.setZ(originX * rotateMatrix[1][0] + originZ * rotateMatrix[1][1]);
+        return playerPos.clone().add(subtract);
+    }
 }
