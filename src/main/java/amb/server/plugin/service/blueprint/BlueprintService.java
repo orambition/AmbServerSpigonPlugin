@@ -3,6 +3,7 @@ package amb.server.plugin.service.blueprint;
 import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.service.blueprint.mode.BatchPutMode;
 import amb.server.plugin.service.blueprint.mode.CopyMode;
+import amb.server.plugin.service.blueprint.mode.CylinderMode;
 import amb.server.plugin.service.blueprint.mode.FillingMode;
 import amb.server.plugin.service.permission.PermissionConstant;
 import amb.server.plugin.service.utils.ItemUtils;
@@ -33,7 +34,7 @@ import static amb.server.plugin.service.utils.PlayerUtils.PLAYER_BLUEPRINT_SELEC
  * created on 2021/3/6
  */
 public class BlueprintService {
-    private static final Logger LOGGER = PluginLogger.getLogger("Ambition");
+    public static final String BLUEPRINT_MODE_SELECT_MENU = "构建蓝图 - 模式选择";
 
     /**
      * 使用 蓝图选择器
@@ -87,7 +88,7 @@ public class BlueprintService {
      * @param player
      */
     private static void openModeSelectMenu(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, 9, PluginConfig.blueprintModeSelectMenu);
+        Inventory inventory = Bukkit.createInventory(null, 9, BLUEPRINT_MODE_SELECT_MENU);
         for (ModeMenuItem menuItem : ModeMenuItem.values()) {
             inventory.addItem(ItemUtils.buildMenuItem(menuItem.material, menuItem.name, menuItem.loreList));
         }
@@ -140,13 +141,20 @@ public class BlueprintService {
             } else {
                 CopyMode.doTouchEvent(player, location);
             }
+        } else if (MENU_ITEM_CYLINDER.name.equals(modeName)) {
+            if (isRight) {
+                CylinderMode.doUseEvent(player, location);
+            } else {
+                CylinderMode.doTouchEvent(player, location);
+            }
         }
     }
 
     enum ModeMenuItem{
-        MENU_ITEM_FILLING(Material.WHITE_WOOL, ChatColor.GOLD + "填充区域", Arrays.asList("左键/右键框选目标后", "放入填充材料")),
-        MENU_ITEM_BATCH_PUT(Material.GRAY_WOOL, ChatColor.GOLD + "批量放置", Arrays.asList("左键选择放置目标", "右键选择放置方向")),
-        MENU_ITEM_COPY(Material.BLUE_WOOL, ChatColor.GOLD + "复制/粘贴", Arrays.asList()),
+        MENU_ITEM_FILLING(Material.GRAY_STAINED_GLASS, ChatColor.GOLD + "填充区域", Arrays.asList("使用给定材料填充选择区域", "左键/右键框选目标", "之后放入填充材料")),
+        MENU_ITEM_BATCH_PUT(Material.GREEN_STAINED_GLASS, ChatColor.GOLD + "批量放置", Arrays.asList("在指定方向上延伸选择的块", "左键选择要延伸的块", "朝向指定方向后右键")),
+        MENU_ITEM_COPY(Material.BLACK_STAINED_GLASS, ChatColor.GOLD + "复制/粘贴", Arrays.asList("使用给定材料复制选择区域", "左键/右键框选目标后", "潜行+右键 选择复制点(相对位置)", "再次 潜行+右键 进行复制")),
+        MENU_ITEM_CYLINDER(Material.BLUE_STAINED_GLASS, ChatColor.GOLD + "空心圆柱", Arrays.asList("使用给定材料建造空心圆柱", "左键选择圆心", "右键选择半径及高度", "之后放入建造材料")),
         ;
 
         private Material material;

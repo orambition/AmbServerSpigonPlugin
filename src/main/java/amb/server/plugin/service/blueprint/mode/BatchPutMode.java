@@ -6,9 +6,9 @@ import amb.server.plugin.service.blueprint.BlueprintUtil;
 import amb.server.plugin.service.utils.ParticleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -19,11 +19,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static amb.server.plugin.service.utils.PlayerUtils.PLAYER_DM_KEY_SELECT_LOCATION_1;
-
 /**
  * @author zhangrenjing
  * created on 2021/3/12
+ * 批量放置
  */
 public class BatchPutMode {
     private static final double LIMIT_NUM = 0.54120D;
@@ -47,7 +46,6 @@ public class BatchPutMode {
      * 执行 批量放置
      *
      * @param player
-     * @param location
      */
     public static void doUseEvent(Player player) {
         Location location1 = BlueprintUtil.getSelectedLocation1(player);
@@ -55,7 +53,7 @@ public class BatchPutMode {
             player.sendMessage("[建筑蓝图] 请先左键选择方块");
             return;
         }
-        Block block = player.getWorld().getBlockAt(location1);
+        Block block = location1.getBlock();
         if (!isValueBuildBlock(block)) {
             player.sendMessage("[建筑蓝图] 选择方块无法批量放置");
             return;
@@ -90,7 +88,7 @@ public class BatchPutMode {
 
             List<Block> needProcessBlockList = new ArrayList<>();
             for (int i = 0; i < PluginConfig.blueprintBatchPutMaxCount; i++) {
-                Block target = block.getWorld().getBlockAt(location);
+                Block target = location.getBlock();
                 if (target.isEmpty() || target.isPassable()) {
                     needProcessBlockList.add(target);
                 } else {
@@ -103,7 +101,7 @@ public class BatchPutMode {
                 return;
             }
             ParticleUtils.drawLine(needProcessBlockList.get(0).getLocation(), needProcessBlockList.get(needProcessBlockSize-1).getLocation());
-            syncBuild(needProcessBlockList, usedItemList);
+            syncBuild(needProcessBlockList, usedItemList, block.getBlockData().clone());
         });
     }
 
@@ -132,7 +130,7 @@ public class BatchPutMode {
         }
         return vector.normalize();
     }
-    private static void syncBuild(List<Block> needProcessBlockList, List<ItemStack> usedItemList) {
+    private static void syncBuild(List<Block> needProcessBlockList, List<ItemStack> usedItemList, BlockData cloneBlockData) {
         Bukkit.getServer().getScheduler().runTask(PluginCore.getInstance(), () -> {
             Iterator<ItemStack> itemStackIterator = usedItemList.iterator();
             ItemStack index = itemStackIterator.next();
@@ -143,6 +141,7 @@ public class BatchPutMode {
                 if (index.getAmount() > 0) {
                     //异步处理构建效果 block.setType(index.getType());
                     block.setType(index.getType());
+                    block.setBlockData(cloneBlockData, true);
                     index.setAmount(index.getAmount() - 1);
                 } else {
                     return;

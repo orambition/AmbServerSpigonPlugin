@@ -14,7 +14,6 @@ public class PlayerUtils {
     // 建筑蓝图选择器 使用后冷却的tag
     public static final String PLAYER_BLUEPRINT_SELECT = "Amb_Blueprint_Select_Cooling";
 
-    public static final String PLAYER_DM_KEY_BLUEPRINT_MODE = "BLUEPRINT_MODE";
     public static final String PLAYER_DM_KEY_SELECT_LOCATION_1 = "selected pos 1";
     public static final String PLAYER_DM_KEY_SELECT_LOCATION_2 = "selected pos 2";
     public static final String PLAYER_DM_KEY_SELECT_LOCATION_3 = "selected pos 3";

@@ -162,6 +162,16 @@ public class BlueprintUtil {
             }
         });
     }
+    public static void syncBuildFromBlock(Map<Block, Block> needProcessBlockMap) {
+        if (needProcessBlockMap == null || needProcessBlockMap.isEmpty()) return;
+        Bukkit.getServer().getScheduler().runTask(PluginCore.getInstance(), () -> {
+            for (Map.Entry<Block, Block> entry : needProcessBlockMap.entrySet()) {
+                entry.getKey().setType(entry.getValue().getType());
+                entry.getKey().setBlockData(entry.getValue().getBlockData().clone(), true);
+                //entry.getKey().getWorld().spawnFallingBlock(entry.getKey().getLocation().add(0.5, 20, 0.5), entry.getValue().createBlockData());
+            }
+        });
+    }
 
     public static void syncBackBuildItem(Player player, List<ItemStack> backList) {
         Bukkit.getServer().getScheduler().runTask(PluginCore.getInstance(), () -> {

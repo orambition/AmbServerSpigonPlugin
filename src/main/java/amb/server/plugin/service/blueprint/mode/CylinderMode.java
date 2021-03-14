@@ -1,6 +1,5 @@
 package amb.server.plugin.service.blueprint.mode;
 
-import amb.server.plugin.config.PluginConfig;
 import amb.server.plugin.core.PluginCore;
 import amb.server.plugin.service.blueprint.BlueprintUtil;
 import amb.server.plugin.service.utils.GUIUtils;
@@ -23,10 +22,10 @@ import static amb.server.plugin.service.utils.PlayerUtils.PLAYER_BLUEPRINT_SELEC
 /**
  * @author zhangrenjing
  * created on 2021/3/12
- * 填充模式
+ * 圆柱 模式
  */
-public class FillingMode {
-    public static final String BLUEPRINT_FILLING_PUT_MENU = "建筑蓝图 - 请放入填充[材料]";
+public class CylinderMode {
+    public static final String BLUEPRINT_CYLINDER_PUT_MENU = "建筑蓝图 - 请放入圆柱的建造材料[材料]";
 
     public static void doUseEvent(Player player, Location location) {
         Location location2 = BlueprintUtil.setSelectedLocation2(player, location);
@@ -68,7 +67,7 @@ public class FillingMode {
 
         // 建造, 这个方法是当前线程延时执行，不是真正的"异步"的，背包无法在异步线程中打开，延时打开是为了让玩家读完提示
         Bukkit.getServer().getScheduler().runTaskLater(PluginCore.getInstance(), () -> {
-            Inventory inventory = Bukkit.createInventory(null, 54, BLUEPRINT_FILLING_PUT_MENU);
+            Inventory inventory = Bukkit.createInventory(null, 54, BLUEPRINT_CYLINDER_PUT_MENU);
             player.openInventory(inventory);
         }, 30);
         GUIUtils.sendMsg(player, "区域选择成功，请放入建造材料");
@@ -112,40 +111,42 @@ public class FillingMode {
 
     /**
      * 异步建造
-     *  @param player
+     *
+     * @param player
      * @param validItem
-     * @param pos1
-     * @param pos2
+     * @param pos1      圆心
+     * @param pos2      半径 + 高度
      */
     private static void asyncBuild(Player player, List<ItemStack> validItem, Location pos1, Location pos2) {
         // 不能异步操作块
         Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginCore.getInstance(), () -> {
-            World world = pos1.getWorld();
-            int[] xyzRange = BlueprintUtil.getRange(pos1, pos2);
             Map<Block, Material> needProcessBlockMap = new HashMap<>();
             Iterator<ItemStack> itemStackIterator = validItem.iterator();
             ItemStack index = itemStackIterator.next();
-            for (int x = xyzRange[0]; x <= xyzRange[1]; x++) {
-                for (int y = xyzRange[2]; y <= xyzRange[3]; y++) {
-                    for (int z = xyzRange[4]; z <= xyzRange[5]; z++) {
-                        Block block = world.getBlockAt(x, y, z);
-                        if (block.isEmpty() || block.isPassable()) {
-                            while (index.getAmount() <= 0 && itemStackIterator.hasNext()) {
-                                index = itemStackIterator.next();
-                            }
-                            if (index.getAmount() > 0) {
-                                //异步处理构建效果 block.setType(index.getType());
-                                needProcessBlockMap.put(block, index.getType());
-                                index.setAmount(index.getAmount() - 1);
-                            } else {
-                                player.sendMessage("[建筑蓝图] 材料不足！无法全部填充");
-                                BlueprintUtil.syncBuild(needProcessBlockMap);
-                                return;
-                            }
+            List<Location> roundXZ = getCylinderBlockLocation(pos1, pos2);
+            // 高度
+            int high = (int) (pos2.getY() - pos1.getY());
+            int positiveNegative = high >= 0 ? 1 : -1;
+            high += positiveNegative;
+            for (int i = 0; i != high; i += positiveNegative) {
+                for (Location location : roundXZ) {
+                    Block block = location.clone().add(0, i, 0).getBlock();
+                    if (block.isEmpty() || block.isPassable()) {
+                        while (index.getAmount() <= 0 && itemStackIterator.hasNext()) {
+                            index = itemStackIterator.next();
+                        }
+                        if (index.getAmount() > 0) {
+                            needProcessBlockMap.put(block, index.getType());
+                            index.setAmount(index.getAmount() - 1);
+                        } else {
+                            player.sendMessage("[建筑蓝图] 材料不足！无法完成建造");
+                            BlueprintUtil.syncBuild(needProcessBlockMap);
+                            return;
                         }
                     }
                 }
             }
+
             // 填充
             BlueprintUtil.syncBuild(needProcessBlockMap);
             // 归还材料
@@ -154,6 +155,31 @@ public class FillingMode {
                 BlueprintUtil.syncBackBuildItem(player, backList);
             }
         });
+    }
+
+    private static List<Location> getCylinderBlockLocation(Location pos1, Location pos2) {
+        // 半径 的 平方
+        double radiusPow = Math.pow(pos2.getX() - pos1.getX(), 2) + Math.pow(pos2.getZ() - pos1.getZ(), 2);
+        // 半径
+        int radius = (int) Math.round(Math.sqrt(radiusPow));
+        // 计算圆周方块
+        List<Location> roundXZ = new ArrayList<>();
+        Location temp = pos1.clone().add(0.5, 0, 0.5);
+
+        int middle = (int) Math.round(Math.sqrt(radiusPow / 2));
+        for (int i = 0; i <= middle; i++) {
+            int rZ = (int) Math.round(Math.sqrt(radiusPow - Math.pow(i, 2)));
+            roundXZ.add(temp.clone().add(i, 0, rZ));
+            roundXZ.add(temp.clone().add(i, 0, -rZ));
+            roundXZ.add(temp.clone().add(rZ, 0, i));
+            roundXZ.add(temp.clone().add(-rZ, 0, i));
+            if (i == 0) continue;
+            roundXZ.add(temp.clone().add(-i, 0, rZ));
+            roundXZ.add(temp.clone().add(-i, 0, -rZ));
+            roundXZ.add(temp.clone().add(rZ, 0, -i));
+            roundXZ.add(temp.clone().add(-rZ, 0, -i));
+        }
+        return roundXZ;
     }
 
 }

@@ -28,7 +28,7 @@ import static amb.server.plugin.service.utils.PlayerUtils.PLAYER_BLUEPRINT_SELEC
  * created on 2021/3/12
  */
 public class CopyMode {
-    private static final Logger LOGGER = PluginLogger.getLogger("Ambition");
+    public static final String BLUEPRINT_COPY_PUT_MENU = "建筑蓝图 - 请放入粘贴所需的[材料]";
     /**
      * 右键
      * @param player
@@ -91,7 +91,7 @@ public class CopyMode {
             GUIUtils.sendMsg(player, "再次[潜行+使用]/[Shift+右键]可以进行粘贴");
         } else {
             // 代扣粘贴材料的填充菜单
-            Inventory inventory = Bukkit.createInventory(null, 54, PluginConfig.blueprintCopyItemPutName);
+            Inventory inventory = Bukkit.createInventory(null, 54, BLUEPRINT_COPY_PUT_MENU);
             player.openInventory(inventory);
         }
 
@@ -142,7 +142,7 @@ public class CopyMode {
         Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginCore.getInstance(), () -> {
             Location playerPos = player.getEyeLocation().clone();
             Map<Material, List<ItemStack>> materialListMap = validItem.stream().collect(Collectors.groupingBy(i -> i.getType()));
-            Map<Block, Material> needProcessBlockMap = new HashMap<>();
+            Map<Block, Block> needProcessBlockMap = new HashMap<>();
             // 计算旋转角度
             double[][] rotateMatrix = customAngle(copyPos, playerPos);
             copyPos.add(-0.5, 0, -0.5);
@@ -153,7 +153,7 @@ public class CopyMode {
                         if (BlueprintUtil.isValueCopyBlock(block) && materialListMap.containsKey(block.getType())) {
                             // 计算位置偏移量
                             Location subtract = customMove(copyPos, playerPos, block, rotateMatrix);
-                            Block target = world.getBlockAt(subtract);
+                            Block target = subtract.getBlock();
                             if (target.isEmpty() || target.isPassable()) {
                                 Iterator<ItemStack> itemStackIterator = materialListMap.get(block.getType()).iterator();
                                 ItemStack index = itemStackIterator.next();
@@ -162,7 +162,7 @@ public class CopyMode {
                                 }
                                 if (index.getAmount() > 0) {
                                     //异步处理构建效果
-                                    needProcessBlockMap.put(target, index.getType());
+                                    needProcessBlockMap.put(target, block);
                                     index.setAmount(index.getAmount() - 1);
                                 } else {
                                     materialListMap.remove(block.getType());
@@ -170,7 +170,7 @@ public class CopyMode {
                             }
                         }
                         if (materialListMap.isEmpty()) {
-                            BlueprintUtil.syncBuild(needProcessBlockMap);
+                            BlueprintUtil.syncBuildFromBlock(needProcessBlockMap);
                             player.sendMessage("[建筑蓝图] 材料不足！无法全部复制");
                             return;
                         }
@@ -179,7 +179,7 @@ public class CopyMode {
             }
 
             // 填充
-            BlueprintUtil.syncBuild(needProcessBlockMap);
+            BlueprintUtil.syncBuildFromBlock(needProcessBlockMap);
             // 归还材料
             List<ItemStack> backList = validItem.stream().filter(i -> i.getAmount() > 0).collect(Collectors.toList());
             if (!backList.isEmpty()) {
